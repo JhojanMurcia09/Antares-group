@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antares Store JM — Calzado Premium</title>
+    <meta name="description" content="Tienda de calzado streetwear e importado. Vitrina 360°, catálogo completo y compra por WhatsApp.">
+    
+    <!-- Google Fonts - Tipografía gratuita -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Iconos Lucide - Iconografía gratuita -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- SweetAlert2 CDN para todos los mensajes del sistema -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Motion One CDN - Animaciones UI/UX Pro Max (gratis) - Build UMD que expone window.Motion -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@10.16.2/dist/motion.min.js"></script>
+    
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="../css/tokens/variables.css">
+    <link rel="stylesheet" href="../css/diseno/layout.css">
+    <link rel="stylesheet" href="../css/animaciones/transiciones.css">
+    <link rel="stylesheet" href="../css/animaciones/motion.css">
+    <link rel="stylesheet" href="../css/componentes/botones.css">
+    <link rel="stylesheet" href="../css/componentes/tarjetas.css">
+    <link rel="stylesheet" href="../css/componentes/header.css">
+    <link rel="stylesheet" href="../css/paginas/index.css">
+    <link rel="stylesheet" href="../css/paginas/hero-vitrina.css">
+    <link rel="stylesheet" href="../css/paginas/stitch.css">
+    <link rel="stylesheet" href="../css/componentes/flotantes.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23ef4444' stroke-width='3'/%3E%3Ctext x='50' y='55' font-family='Arial' font-weight='bold' font-size='14' text-anchor='middle' fill='%23ef4444'>A%3C/text%3E%3C/svg%3E">
+</head>
+<body class="pagina-inicio">
+
+    <!-- Header: sigue la pantalla y al bajar se convierte en burbuja flotante -->
+    <header class="header-principal" id="header-principal">
+        <div class="contenedor-header">
+            <div class="logo-marca">
+                <i data-lucide="footprints" class="icono-logo-animado" style="color: #ef4444;"></i>
+                <span class="texto-logo">Antares</span>
+            </div>
+
+            <nav class="menu-navegacion" id="menu-navegacion">
+                <ul class="lista-menu">
+                    <li><a href="#inicio" class="enlace-menu menu-item-motion activo">Inicio</a></li>
+                    <li><a href="../html/catalogo.html" class="enlace-menu menu-item-motion">Catálogo</a></li>
+                    <li><a href="#marcas" class="enlace-menu menu-item-motion">Marcas</a></li>
+                    <li><a href="#contacto" class="enlace-menu menu-item-motion">Contacto</a></li>
+                    <li><a href="../html/login.html" class="enlace-menu menu-item-motion">Iniciar sesión</a></li>
+                    <li><a href="../html/carrito.html" class="enlace-menu menu-item-motion">Carrito <span class="contador-carrito" id="contador-carrito">0</span></a></li>
+                </ul>
+            </nav>
+
+            <button class="boton-menu-hamburguesa" id="boton-menu-hamburguesa" aria-label="Abrir menú">
+                <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero cinematográfico: texto | vitrina 360° que cambia y gira -->
+    <section id="inicio" class="hero-inmersivo hero-cinematico">
+        <div class="columna-texto hero-contenido-motion reveal-scroll">
+            <span class="chip-hero">
+                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+                Nueva colección 2026
+            </span>
+            <h1 class="titulo-hero"><span class="texto-gradiente">Antares</span> <br>Calzado Premium</h1>
+            <p class="subtitulo-hero">Streetwear e importado. Diseño que se siente. Míralos girar, elígelos y cómpralos por WhatsApp.</p>
+            <div class="cta-hero">
+                <a href="../html/catalogo.html" class="boton-primario grande boton-motion">
+                    <i data-lucide="shopping-bag" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                    Ver catálogo
+                </a>
+                <button class="boton-secundario grande boton-motion" id="boton-comprar-hero">
+                    <i data-lucide="send" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                    Comprar por WhatsApp
+                </button>
+            </div>
+        </div>
+
+        <div class="columna-visual hero-imagen-motion reveal-scroll">
+            <div class="vitrina-360" id="vitrina-360">
+                <div class="anillo-vitrina" aria-hidden="true"></div>
+                <img class="vitrina-imagen" id="imagen-vitrina"
+                     src="../assets/imagenes/placeholder.svg"
+                      alt="Cargando producto" loading="eager">
+                <div class="chip-precio-vitrina" id="chip-precio-vitrina">
+                     <span class="precio-vitrina" id="precio-vitrina"></span>
+                     <span class="badge-promocion" id="badge-oferta-vitrina" hidden></span>
+                    <a href="../html/catalogo.html" class="enlace-vitrina">Ver detalle</a>
+                </div>
+            </div>
+            <div class="sombra-piso-vitrina" aria-hidden="true"></div>
+            <div class="pie-vitrina">
+                <div class="puntos-vitrina" id="puntos-vitrina" aria-label="Modelos destacados"></div>
+                <p class="nombre-vitrina" id="nombre-vitrina">Cargando catálogo…</p>
+                <p class="etiqueta-modelo">Toca el zapato para girarlo 360°</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="seccion-lanzamientos reveal-scroll" id="lanzamientos">
+        <div class="cabecera-seccion-stitch">
+            <h2 class="titulo-seccion">Nuevos lanzamientos</h2>
+            <p>Encuentra tu próximo par favorito y revisa sus tallas disponibles.</p>
+            <a href="../html/catalogo.html" class="enlace-vitrina">Ver catálogo completo →</a>
+        </div>
+        <div class="grid-lanzamientos" id="grid-lanzamientos" aria-live="polite"></div>
+    </section>
+
+    <section class="seccion-confianza" aria-label="Beneficios de comprar en Antares">
+        <article><h3>Envíos asegurados</h3><p>Seguimiento para tus pedidos en Colombia.</p></article>
+        <article><h3>Calidad importada</h3><p>Modelos seleccionados para coleccionistas.</p></article>
+        <article><h3>Compra directa</h3><p>Atención personalizada por WhatsApp.</p></article>
+        <article><h3>Cambios sin fricción</h3><p>Te asesoramos para elegir tu talla.</p></article>
+    </section>
+
+    <!-- Sección Marcas -->
+    <section id="marcas" class="seccion-marcas reveal-scroll">
+        <div class="cabecera-seccion-stitch">
+            <h2 class="titulo-seccion">Marcas oficiales</h2>
+            <p>Alianzas e importaciones exclusivas de las firmas con mayor tracción en la cultura urbana.</p>
+        </div>
+        <div class="grid-marcas">
+            <div class="tarjeta-marca" data-marca="adidas">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #ef4444; margin-bottom: 12px;"></i>
+                <h3>Adidas</h3>
+                <p>Samba, Adizero, Terrex, Magma</p>
+            </div>
+            <div class="tarjeta-marca" data-marca="new-balance">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #10b981; margin-bottom: 12px;"></i>
+                <h3>New Balance</h3>
+                <p>9060, 530, línea premium</p>
+            </div>
+            <div class="tarjeta-marca" data-marca="nike-sb">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #3b82f6; margin-bottom: 12px;"></i>
+                <h3>Nike SB</h3>
+                <p>Skate, edición especial</p>
+            </div>
+            <div class="tarjeta-marca" data-marca="on-running">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #f59e0b; margin-bottom: 12px;"></i>
+                <h3>On Running</h3>
+                <p>OnCloud, OnCloud Dama</p>
+            </div>
+            <div class="tarjeta-marca" data-marca="wider">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #8b5cf6; margin-bottom: 12px;"></i>
+                <h3>Wider</h3>
+                <p>Línea 55k y 70k</p>
+            </div>
+            <div class="tarjeta-marca" data-marca="armani-exchange">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #000000; margin-bottom: 12px;"></i>
+                <h3>Armani Exchange</h3>
+                <p>AX negra suela goma</p>
+            </div>
+            <div class="tarjeta-marca" data-marca="urban-paris">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #f43f5e; margin-bottom: 12px;"></i>
+                <h3>Urban / Paris</h3>
+                <p>Calzado urbano y casual</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto -->
+    <section id="contacto" class="seccion-contacto reveal-scroll">
+        <h2 class="titulo-seccion">Contáctanos</h2>
+        <p>¿Tienes dudas sobre un modelo o talla?</p>
+        <a href="https://wa.me/573225840218" id="enlace-contacto-whatsapp" class="boton-primario ancho-completo boton-motion" target="_blank" rel="noopener noreferrer">
+            <i data-lucide="send" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+            Escribir por WhatsApp
+        </a>
+    </section>
+
+    <footer class="pie-pagina">
+        <div class="contenido-pie">
+            <div class="informacion-empresa">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #ef4444; margin-bottom: 8px;"></i>
+                <span class="texto-logo">Antares</span>
+                <p>Calzado premium streetwear e importado.</p>
+            </div>
+            <div class="enlaces-pie">
+                <a href="#">Términos y condiciones</a>
+                <a href="#">Política de privacidad</a>
+                <a href="#">Envíos y devoluciones</a>
+                <a href="../html/admin.html" style="color:#ef4444;">Panel Admin</a>
+            </div>
+            <div class="derechos-reservados">
+                <p>&copy; 2026 Antares Store JM. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Burbuja flotante de WhatsApp: sigue la pantalla en la parte inferior -->
+    <button class="burbuja-whatsapp" id="burbuja-whatsapp" aria-label="Chatea por WhatsApp">
+        <span class="anillo-whatsapp" aria-hidden="true"></span>
+        <i data-lucide="message-circle" style="width: 28px; height: 28px;"></i>
+        <span class="tooltip-whatsapp">Comprar por WhatsApp</span>
+    </button>
+
+    <!-- Scripts -->
+    <script src="../js/utilidades/formato.js"></script>
+    <script src="../js/utilidades/mensajes.js"></script>
+    <script src="../js/servicios/whatsapp.js"></script>
+    <script src="../js/servicios/productos-api.js"></script>
+    <script src="../js/componentes/motion-animations.js"></script>
+    <script src="../js/componentes/vitrina.js"></script>
+    <script src="../js/componentes/carrito.js"></script>
+    <script src="../js/core/app.js"></script>
+    
+    <!-- Inicializar iconos Lucide (con guarda en caso de fallo del CDN) -->
+    <script>
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>

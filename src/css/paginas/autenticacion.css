@@ -1,0 +1,496 @@
+/* ==========================================================================
+   Archivo: css/paginas/autenticacion.css
+   Descripción: Diseño premium de login y registro (pantalla dividida,
+   glassmorphism, orbes de luz y formulario enfocado). Pantalla completa.
+   Autor: Val (Agente Diseñador Experto)
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+/* ===== Cuerpo y fondo decorativo ===== */
+.cuerpo-autenticacion {
+    background-color: var(--color-fondo-oscuro);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.fondo-decorativo {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.orbe {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+}
+
+.orbe-rojo {
+    width: 460px;
+    height: 460px;
+    top: -160px;
+    left: -120px;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.35), transparent 70%);
+    animation: flote-orbe 10s ease-in-out infinite alternate;
+}
+
+.orbe-indigo {
+    width: 520px;
+    height: 520px;
+    bottom: -200px;
+    right: -140px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.28), transparent 70%);
+    animation: flote-orbe 13s ease-in-out infinite alternate-reverse;
+}
+
+.orbe-ambar {
+    width: 260px;
+    height: 260px;
+    top: 40%;
+    left: 55%;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.18), transparent 70%);
+    animation: flote-orbe 8s ease-in-out infinite alternate;
+}
+
+@keyframes flote-orbe {
+    from {
+        transform: translateY(-18px) translateX(0) scale(1);
+    }
+    to {
+        transform: translateY(22px) translateX(26px) scale(1.07);
+    }
+}
+
+/* ===== Pantalla dividida ===== */
+.pantalla-autenticacion {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--espaciado-4);
+}
+
+.tarjeta-autenticacion {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+    max-width: 980px;
+    background: rgba(23, 23, 23, 0.88);
+    backdrop-filter: blur(24px);
+    border: 1px solid var(--color-borde);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.65);
+}
+
+/* ===== Panel visual (lado izquierdo) ===== */
+.panel-visual {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: var(--espaciado-5) var(--espaciado-4);
+    min-height: 660px;
+    background:
+        radial-gradient(circle at 80% 12%, rgba(255, 255, 255, 0.14), transparent 42%),
+        linear-gradient(160deg, #ef4444 0%, #7f1d1d 52%, #171717 100%);
+    overflow: hidden;
+}
+
+/* Círculos decorativos */
+.panel-visual::before,
+.panel-visual::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.panel-visual::before {
+    width: 340px;
+    height: 340px;
+    top: 12%;
+    right: -120px;
+}
+
+.panel-visual::after {
+    width: 220px;
+    height: 220px;
+    bottom: -70px;
+    left: -60px;
+    border-color: rgba(0, 0, 0, 0.25);
+}
+
+/* Logo dentro del panel visual */
+.logo-panel-visual {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 2;
+}
+
+.logo-panel-visual svg,
+.logo-panel-visual .lucide {
+    width: 34px;
+    height: 34px;
+    color: #ffffff;
+}
+
+.logo-panel-visual strong {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.5px;
+}
+
+.logo-panel-visual span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+/* Zapato flotante */
+.modelo-flotante {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.modelo-flotante img {
+    width: 78%;
+    max-width: 320px;
+    border-radius: 18px;
+    transform: rotate(-6deg);
+    box-shadow:
+        0 30px 60px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.25);
+    animation: flote-modelo 7s ease-in-out infinite alternate;
+}
+
+.modelo-flotante img::selection {
+    background: transparent;
+}
+
+@keyframes flote-modelo {
+    from {
+        transform: rotate(-6deg) translateY(-8px);
+    }
+    to {
+        transform: rotate(-3deg) translateY(14px);
+    }
+}
+
+.contenido-visual {
+    position: relative;
+    z-index: 2;
+}
+
+.contenido-visual h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin-bottom: var(--espaciado-2);
+    letter-spacing: -0.5px;
+}
+
+.lista-beneficios {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lista-beneficios li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.lista-beneficios svg,
+.lista-beneficios .lucide {
+    width: 18px;
+    height: 18px;
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+/* ===== Panel del formulario (lado derecho) ===== */
+.panel-formulario {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--espaciado-6) var(--espaciado-5);
+    gap: var(--espaciado-3);
+}
+
+.barra-superior-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--espaciado-4);
+}
+
+.logo-mini {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    color: var(--color-texto-principal);
+    font-size: 1.1rem;
+    letter-spacing: -0.5px;
+}
+
+.logo-mini svg,
+.logo-mini .lucide {
+    width: 26px;
+    height: 26px;
+    color: var(--color-marca-principal);
+}
+
+.enlace-atras {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    color: var(--color-texto-secundario);
+    transition: var(--transicion-rapida);
+    padding: 6px 10px;
+    border-radius: var(--radio-borde-circulo);
+}
+
+.enlace-atras:hover {
+    color: var(--color-texto-principal);
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.enlace-atras svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ===== Entrada de campos ===== */
+.esta-seccion-titulo {
+    display: inline-flex;
+    flex-direction: column;
+    gap: var(--espaciado-1);
+    margin-bottom: var(--espaciado-4);
+}
+
+.esta-seccion-titulo h2 {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--color-texto-principal);
+    letter-spacing: -0.5px;
+    line-height: 1.15;
+}
+
+.esta-seccion-titulo h2 span {
+    color: var(--color-marca-principal);
+}
+
+.esta-seccion-titulo p {
+    font-size: 0.95rem;
+    color: var(--color-texto-secundario);
+    margin: 0;
+    max-width: 34ch;
+}
+
+.formulario-autenticacion {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-3);
+}
+
+.campo-formulario {
+    margin-bottom: 0;
+}
+
+.campo-formulario label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-texto-secundario);
+    margin-bottom: 8px;
+    letter-spacing: 0.3px;
+}
+
+.campo-entradas {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: var(--color-fondo-oscuro);
+    border: 1px solid var(--color-borde);
+    border-radius: 14px;
+    padding: 4px 16px;
+    min-height: 56px;
+    transition: border-color var(--transicion-rapida), box-shadow var(--transicion-rapida);
+}
+
+.campo-entradas:focus-within {
+    border-color: var(--color-marca-principal);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+.campo-entradas > svg,
+.campo-entradas > .lucide {
+    width: 20px;
+    height: 20px;
+    color: #71717a;
+    flex-shrink: 0;
+    transition: color var(--transicion-rapida);
+}
+
+.campo-entradas:focus-within > svg,
+.campo-entradas:focus-within > .lucide {
+    color: var(--color-marca-principal);
+}
+
+.campo-entradas input {
+    width: 100%;
+    min-height: 48px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--color-texto-principal);
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.campo-entradas input::placeholder {
+    color: #565660;
+}
+
+/* Botón mostrar/ocultar contraseña */
+.boton-mostrar-contrasena {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    color: #71717a;
+    transition: var(--transicion-rapida);
+    flex-shrink: 0;
+}
+
+.boton-mostrar-contrasena:hover {
+    color: var(--color-texto-principal);
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+.boton-mostrar-contrasena svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Fila de opciones (recordar + olvidé contraseña) */
+.opciones-formulario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaciado-2);
+    flex-wrap: wrap;
+}
+
+.casilla-recordar {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--color-texto-secundario);
+    cursor: pointer;
+    min-height: var(--touch-minimo);
+}
+
+.casilla-recordar input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-marca-principal);
+    cursor: pointer;
+}
+
+.enlace-ayuda {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-marca-principal);
+    transition: var(--transicion-rapida);
+}
+
+.enlace-ayuda:hover {
+    color: #f87171;
+    text-decoration: underline;
+}
+
+/* Separador */
+.separador-formulario {
+    display: flex;
+    align-items: center;
+    gap: var(--espaciado-2);
+    color: var(--color-texto-suave);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-top: var(--espaciado-1);
+}
+
+.separador-formulario::before,
+.separador-formulario::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--color-borde);
+}
+
+/* Pie del formulario */
+.pie-formulario {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--color-texto-secundario);
+    margin-top: var(--espaciado-2);
+}
+
+.pie-formulario a {
+    color: var(--color-marca-principal);
+    font-weight: 700;
+    transition: var(--transicion-rapida);
+}
+
+.pie-formulario a:hover {
+    color: #f87171;
+    text-decoration: underline;
+}
+
+/* Reducir movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .orbe,
+    .modelo-flotante img {
+        animation: none;
+    }
+}
+
+/* ==========================================================================
+   Responsive: en móvil se oculta el panel visual y la tarjeta ocupa todo
+   ========================================================================== */
+@media (max-width: 860px) {
+    .tarjeta-autenticacion {
+        grid-template-columns: 1fr;
+        max-width: 460px;
+    }
+
+    .panel-visual {
+        display: none;
+    }
+
+    .panel-formulario {
+        padding: var(--espaciado-5) var(--espaciado-4);
+    }
+}

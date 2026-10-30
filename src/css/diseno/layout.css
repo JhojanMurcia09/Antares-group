@@ -1,0 +1,367 @@
+/* ==========================================================================
+   Archivo: css/diseno/layout.css
+   Descripción: Estructura general de layout y secciones de Antares.
+   Autor: Val
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+.seccion-filtros {
+    padding: var(--espaciado-5) var(--espaciado-4);
+    background-color: var(--color-fondo-suave);
+}
+
+.contenedor-filtros {
+    display: flex;
+    gap: var(--espaciado-2);
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.seccion-catalogo {
+    padding: var(--espaciado-5) var(--espaciado-4);
+}
+
+.titulo-seccion {
+    font-size: var(--tamaño-titulo-seccion);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: var(--espaciado-5);
+    color: var(--color-texto-principal);
+    letter-spacing: -0.5px;
+}
+
+/* Acento rojo bajo cada título de sección */
+.titulo-seccion::after {
+    content: "";
+    display: block;
+    width: 56px;
+    height: 4px;
+    margin: 12px auto 0;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--color-marca-principal), transparent);
+}
+
+.hero-inmersivo {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 40%, #0f0f1a 100%);
+    overflow: hidden;
+    padding: 0 var(--espaciado-4);
+}
+
+.contenido-hero {
+    z-index: 10;
+    max-width: 800px;
+}
+
+.titulo-hero {
+    font-size: var(--tamaño-titulo-hero);
+    font-weight: 900;
+    line-height: 1.1;
+    color: var(--color-texto-principal);
+    margin-bottom: var(--espaciado-3);
+    letter-spacing: -1px;
+}
+
+.subtitulo-hero {
+    font-size: var(--tamaño-subtitulo-hero);
+    color: var(--color-texto-secundario);
+    margin-bottom: var(--espaciado-5);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-hero {
+    display: flex;
+    gap: var(--espaciado-3);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.contenedor-modelo-insignia {
+    position: relative;
+    margin-top: var(--espaciado-6);
+    z-index: 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.caja-rotacion-360 {
+    perspective: 1000px;
+    width: 220px;
+    height: 300px;
+    position: relative;
+    transform-style: preserve-3d;
+    animation: rotar-eje-x 6s infinite linear;
+}
+
+.cara-frontal,
+.cara-trasera {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radio-borde-medio);
+    overflow: hidden;
+    border: 1px solid var(--color-borde);
+    box-shadow: var(--sombra-fuerte);
+}
+
+.cara-trasera {
+    transform: rotateX(180deg);
+}
+
+.imagen-modelo-insignia {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.etiqueta-modelo {
+    margin-top: var(--espaciado-3);
+    font-size: 0.875rem;
+    color: var(--color-texto-secundario);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+@keyframes rotar-eje-x {
+    0% {
+        transform: rotateX(0deg);
+    }
+    100% {
+        transform: rotateX(360deg);
+    }
+}
+
+.seccion-marcas {
+    padding: var(--espaciado-6) var(--espaciado-4);
+    background-color: var(--color-fondo-suave);
+}
+
+.grid-marcas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--espaciado-4);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tarjeta-marca {
+    background-color: var(--color-fondo-oscuro);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-medio);
+    padding: var(--espaciado-4);
+    text-align: center;
+    transition: var(--transicion-suave);
+    cursor: pointer;
+}
+
+.tarjeta-marca:hover {
+    border-color: rgba(239, 68, 68, 0.45);
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(239, 68, 68, 0.12);
+}
+
+/* Icono de marca dentro de un círculo suave (sobrescribe estilos en línea) */
+.tarjeta-marca svg {
+    width: 40px !important;
+    height: 40px !important;
+    padding: 14px;
+    margin: 0 auto var(--espaciado-2) !important;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-borde);
+    border-radius: 14px;
+    display: block;
+}
+
+.tarjeta-marca h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--espaciado-1);
+    color: var(--color-texto-principal);
+}
+
+.tarjeta-marca p {
+    font-size: 0.875rem;
+    color: var(--color-texto-secundario);
+}
+
+.seccion-contacto {
+    padding: var(--espaciado-6) var(--espaciado-4);
+    text-align: center;
+    background-color: var(--color-fondo-oscuro);
+}
+
+.seccion-contacto .titulo-seccion {
+    color: var(--color-texto-principal);
+}
+
+.seccion-contacto p {
+    color: var(--color-texto-secundario);
+    margin-bottom: var(--espaciado-4);
+    font-size: var(--tamaño-texto-base);
+}
+
+.pie-pagina {
+    padding: var(--espaciado-5) var(--espaciado-4);
+    border-top: 1px solid var(--color-borde);
+    background-color: var(--color-fondo-suave);
+}
+
+.contenido-pie {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-4);
+    align-items: center;
+    text-align: center;
+}
+
+.informacion-empresa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--espaciado-1);
+}
+
+.enlaces-pie {
+    display: flex;
+    gap: var(--espaciado-3);
+}
+
+.enlaces-pie a {
+    font-size: 0.875rem;
+    color: var(--color-texto-secundario);
+    transition: var(--transicion-rapida);
+}
+
+.enlaces-pie a:hover {
+    color: var(--color-texto-principal);
+}
+
+.derechos-reservados p {
+    font-size: 0.75rem;
+    color: var(--color-texto-suave);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (min-width: 768px) {
+    .contenido-pie {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .informacion-empresa {
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .derechos-reservados {
+        text-align: right;
+    }
+}
+
+/* ===== Orbes de luz decorativos del hero ===== */
+.hero-inmersivo::before,
+.hero-inmersivo::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.hero-inmersivo::before {
+    width: 520px;
+    height: 520px;
+    top: -140px;
+    left: 50%;
+    transform: translateX(-80%);
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.28), transparent 70%);
+    animation: flote-orbe 9s ease-in-out infinite alternate;
+}
+
+.hero-inmersivo::after {
+    width: 420px;
+    height: 420px;
+    bottom: -120px;
+    right: -80px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.22), transparent 70%);
+    animation: flote-orbe 11s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes flote-orbe {
+    from {
+        transform: translateY(-14px) translateX(0) scale(1);
+    }
+    to {
+        transform: translateY(18px) translateX(24px) scale(1.08);
+    }
+}
+
+/* Texto con degradado (marca) */
+.texto-gradiente {
+    background: linear-gradient(92deg, #ef4444 0%, #f97316 55%, #ef4444 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+}
+
+/* Halo rojo detrás del modelo insignia 360° */
+.contenedor-modelo-insignia::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(239, 68, 68, 0.25), transparent 70%);
+    filter: blur(40px);
+    z-index: -1;
+    animation: halo-pulsa 4s ease-in-out infinite alternate;
+}
+
+@keyframes halo-pulsa {
+    from {
+        opacity: 0.55;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.14);
+    }
+}
+
+/* Etiqueta del modelo insignia convertida en píldora con pista de "gira" */
+.etiqueta-modelo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-circulo);
+    backdrop-filter: blur(8px);
+}

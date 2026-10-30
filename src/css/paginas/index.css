@@ -1,0 +1,41 @@
+/* ==========================================================================
+   Archivo: css/paginas/index.css
+   Descripción: Estilos específicos de la página principal de Antares.
+   Autor: Val
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+/* Ajustes específicos del hero */
+.hero-inmersivo .cta-hero .boton-primario.grande {
+    box-shadow: var(--sombra-media);
+}
+
+.hero-inmersivo .cta-hero .boton-primario.grande:hover {
+    box-shadow: var(--sombra-fuerte);
+    transform: translateY(-2px);
+    animation: pulsar-compra 2s infinite;
+}
+
+/* Ajustes de tarjetas en bento grid */
+.tarjeta-producto {
+    animation: entrada-suave 0.5s ease-out both;
+}
+
+.tarjeta-producto:nth-child(1) { animation-delay: 0.1s; }
+.tarjeta-producto:nth-child(2) { animation-delay: 0.2s; }
+.tarjeta-producto:nth-child(3) { animation-delay: 0.3s; }
+.tarjeta-producto:nth-child(4) { animation-delay: 0.4s; }
+
+/* Filtros */
+.seccion-filtros {
+    position: sticky;
+    top: 80px; /* altura del header */
+    z-index: 100;
+    padding-top: var(--espaciado-3);
+    padding-bottom: var(--espaciado-3);
+}
+
+/* Ajustes de imagen insignia */
+.imagen-modelo-insignia {
+    filter: drop-shadow(0 20px 30px rgba(0, 0, 0, 0.5));
+}

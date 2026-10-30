@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto — Antares Store JM</title>
+    <meta name="description" content="Explora los detalles, tallas y precio de tu próximo modelo favorito en Antares Store JM.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="../css/tokens/variables.css">
+    <link rel="stylesheet" href="../css/diseno/layout.css">
+    <link rel="stylesheet" href="../css/componentes/botones.css">
+    <link rel="stylesheet" href="../css/componentes/tarjetas.css">
+    <link rel="stylesheet" href="../css/componentes/header.css">
+    <link rel="stylesheet" href="../css/componentes/paginas.css">
+    <link rel="stylesheet" href="../css/componentes/flotantes.css">
+    <link rel="stylesheet" href="../css/paginas/stitch.css">
+</head>
+<body class="pagina-producto">
+    <header class="header-principal">
+        <div class="contenedor-header">
+            <a class="logo-marca" href="index.html">
+                <i data-lucide="footprints" class="icono-logo-animado" aria-hidden="true"></i>
+                <span class="texto-logo">Antares Store JM</span>
+            </a>
+            <nav class="menu-navegacion" aria-label="Navegación principal">
+                <ul class="lista-menu">
+                    <li><a href="index.html" class="enlace-menu">Inicio</a></li>
+                    <li><a href="catalogo.html" class="enlace-menu">Colecciones</a></li>
+                    <li><a href="carrito.html" class="enlace-menu">Carrito <span class="contador-carrito" id="contador-carrito">0</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="pagina-producto">
+        <p class="ruta-producto"><a href="index.html">Inicio</a>　›　<a href="catalogo.html">Catálogo</a>　›　<span id="marca-producto">Producto</span></p>
+        <div id="producto-no-encontrado" class="estado-vacio" hidden>
+            <h1>No encontramos ese modelo</h1>
+            <p>Revisa el enlace o vuelve al catálogo para explorar los modelos disponibles.</p>
+            <a href="catalogo.html" class="boton-primario">Volver al catálogo</a>
+        </div>
+        <div class="contenedor-producto" id="detalle-producto">
+            <section class="galeria-producto" aria-label="Galería del producto">
+                <div class="imagen-producto-destacado">
+                    <img src="../assets/imagenes/placeholder.svg" alt="" class="foto-producto" id="imagen-producto-destacado">
+                </div>
+                <div class="miniaturas-producto" id="miniaturas-producto" aria-label="Más imágenes del producto"></div>
+            </section>
+
+            <section class="detalle-producto">
+                <span class="marca-detalle-producto" id="etiqueta-marca-producto"></span>
+                <h1 id="nombre-producto">Cargando producto…</h1>
+                <p class="referencia" id="referencia-producto"></p>
+                <p class="precio" id="precio-producto"></p>
+                <p class="descripcion" id="descripcion-producto"></p>
+
+                <div class="seleccion-talla">
+                    <div class="fila-etiqueta-talla">
+                        <p class="etiqueta-talla">Selecciona tu talla</p>
+                        <span id="talla-elegida" aria-live="polite">Elige una talla</span>
+                    </div>
+                    <div class="pildoras" id="tallas-producto"></div>
+                </div>
+
+                <div class="control-cantidad-producto">
+                    <label for="cantidad-producto">Cantidad</label>
+                    <div class="control-cantidad">
+                        <button type="button" id="restar-cantidad" aria-label="Quitar una unidad">−</button>
+                        <input type="number" id="cantidad-producto" min="1" max="99" value="1" inputmode="numeric">
+                        <button type="button" id="sumar-cantidad" aria-label="Agregar una unidad">+</button>
+                    </div>
+                </div>
+
+                <div class="acciones-producto">
+                    <button class="boton-whatsapp ancho-completo" type="button" id="comprar-whatsapp-producto">
+                        <i data-lucide="message-circle" aria-hidden="true"></i>
+                        Comprar por WhatsApp
+                    </button>
+                    <button class="boton-secundario ancho-completo" type="button" id="agregar-carrito-producto">
+                        <i data-lucide="shopping-bag" aria-hidden="true"></i>
+                        Agregar al carrito
+                    </button>
+                </div>
+                <ul class="garantias-producto">
+                    <li>Envíos a toda Colombia</li>
+                    <li>Atención directa para elegir tu talla</li>
+                    <li>Modelos seleccionados por Antares Store JM</li>
+                </ul>
+            </section>
+        </div>
+    </main>
+
+    <footer class="pie-pagina">
+        <div class="contenido-pie">
+            <span class="texto-logo">Antares Store JM</span>
+            <p class="derechos-reservados-texto">&copy; 2026 Antares Store JM. Todos los derechos reservados.</p>
+            <div class="enlaces-pie"><a href="catalogo.html">Catálogo</a><a href="carrito.html">Mi carrito</a></div>
+        </div>
+    </footer>
+
+    <button class="burbuja-whatsapp" id="burbuja-whatsapp" aria-label="Contactar a Antares por WhatsApp">
+        <i data-lucide="message-circle" aria-hidden="true"></i>
+    </button>
+
+    <script src="../js/utilidades/formato.js"></script>
+    <script src="../js/utilidades/mensajes.js"></script>
+    <script src="../js/servicios/whatsapp.js"></script>
+    <script src="../js/servicios/productos-api.js"></script>
+    <script src="../js/componentes/carrito.js"></script>
+    <script src="../js/componentes/producto.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) window.lucide.createIcons();
+        });
+    </script>
+</body>
+</html>

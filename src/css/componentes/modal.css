@@ -1,0 +1,207 @@
+/* ==========================================================================
+   Archivo: css/componentes/modal.css
+   Descripción: Estilos del modal Quick View (vista rápida de producto).
+   Autor: Val
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+.overlay-modal {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transicion-suave);
+}
+
+.overlay-modal.activo {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-vista-rapida {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    background: linear-gradient(160deg, #171717 0%, #101014 100%);
+    border: 1px solid #52525b;
+    border-radius: 20px;
+    padding: var(--espaciado-4);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(239, 68, 68, 0.08);
+    z-index: 2001;
+    opacity: 0;
+    visibility: hidden;
+    transition: var(--transicion-suave);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-4);
+    overflow-y: auto;
+}
+
+.modal-vista-rapida.activo {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
+}
+
+.contenido-modal {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-4);
+}
+
+.galeria-modal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-3);
+    align-items: center;
+}
+
+.imagen-principal-modal {
+    width: 100%;
+    max-width: 400px;
+    height: auto;
+    border-radius: var(--radio-borde-medio);
+    border: 1px solid var(--color-borde);
+    background-color: var(--color-fondo-oscuro);
+    object-fit: contain;
+}
+
+.miniaturas-modal {
+    display: flex;
+    gap: var(--espaciado-1);
+    overflow-x: auto;
+    padding-bottom: var(--espaciado-1);
+    scrollbar-width: none;
+}
+
+.miniaturas-modal::-webkit-scrollbar {
+    display: none;
+}
+
+.miniatura-modal {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: var(--radio-borde-suave);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--transicion-rapida);
+    opacity: 0.6;
+}
+
+.miniatura-modal:hover,
+.miniatura-modal.activa {
+    opacity: 1;
+    border-color: var(--color-marca-principal);
+}
+
+.informacion-producto-modal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-3);
+}
+
+.nombre-producto-modal {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--color-texto-principal);
+    line-height: 1.2;
+}
+
+.referencia-producto-modal {
+    font-size: 0.875rem;
+    color: var(--color-texto-suave);
+    font-family: monospace;
+}
+
+.precio-producto-modal {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-marca-principal);
+}
+
+.etiqueta-tallas {
+    font-size: 0.875rem;
+    color: var(--color-texto-secundario);
+    margin-bottom: var(--espaciado-1);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.seleccion-talla-modal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-1);
+}
+
+.descripcion-modal {
+    font-size: var(--tamaño-texto-base);
+    color: var(--color-texto-secundario);
+    line-height: 1.7;
+}
+
+.acciones-modal {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-2);
+    margin-top: var(--espaciado-2);
+    border-top: 1px solid var(--color-borde);
+    padding-top: var(--espaciado-3);
+}
+
+/* ==========================================================================
+   Responsive: Modal en móvil
+   ========================================================================== */
+@media (max-width: 768px) {
+    .modal-vista-rapida {
+        width: 95%;
+        max-height: 90vh;
+        padding: var(--espaciado-3);
+    }
+
+    .nombre-producto-modal {
+        font-size: 1.5rem;
+    }
+
+    .imagen-principal-modal {
+        max-width: 100%;
+    }
+}
+
+/* ===== Modal premium en escritorio: galería izquierda, datos derecha ===== */
+@media (min-width: 900px) {
+    .contenido-modal {
+        display: grid;
+        grid-template-columns: 1.05fr 1fr;
+        align-items: center;
+        gap: var(--espaciado-5);
+    }
+
+    .boton-cerrar-modal {
+        top: -14px;
+        right: -14px;
+    }
+}
+
+/* Chip de marca dentro del modal */
+.marca-producto-modal {
+    width: fit-content;
+    padding: 5px 12px;
+    border-radius: var(--radio-borde-circulo);
+    background: rgba(239, 68, 68, 0.12);
+    color: #f87171;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    margin-top: calc(var(--espaciado-2) * -1);
+}

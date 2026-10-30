@@ -1,0 +1,161 @@
+/* ==========================================================================
+   Archivo: css/animaciones/motion.css
+   Descripción: Animaciones y transiciones de Motion One para Antares Store JM.
+   Diseño UI/UX Pro Max - Inteligencia de diseño visual.
+   Todas las animaciones son gratuitas y funcionan por CDN.
+   Autor: Val (Agente Diseñador Experto)
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+/* ===== Reducción de movimiento para accesibilidad ===== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ===== Entrada de elementos con Motion ===== */
+.motion-entrada {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.motion-entrada.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ===== Tarjetas de producto con entrada escalonada ===== */
+.tarjeta-motion {
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.tarjeta-motion.visible {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ===== Hero section inmersivo con Motion ===== */
+.hero-contenido-motion {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.hero-contenido-motion.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.hero-imagen-motion {
+    opacity: 0;
+    transform: scale(0.9) rotateX(10deg);
+    transition: opacity 1s ease, transform 1s ease;
+}
+
+.hero-imagen-motion.visible {
+    opacity: 1;
+    transform: scale(1) rotateX(0deg);
+}
+
+/* ===== Botones con microinteracciones ===== */
+.boton-motion {
+    transition: all 0.2s ease;
+}
+
+.boton-motion:active {
+    transform: scale(0.95);
+}
+
+.boton-motion:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--sombra-fuerte);
+}
+
+/* ===== Menú animado ===== */
+.menu-item-motion {
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.menu-item-motion.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* ===== Rotación 360° eje X mejorada con Motion ===== */
+.rotacion-360 {
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d;
+}
+
+.rotacion-360.activa {
+    transform: rotateX(360deg);
+}
+
+/* ===== Estado de carga con Motion ===== */
+.skeleton-motion {
+    background: linear-gradient(
+        90deg,
+        var(--color-fondo-oscuro) 25%,
+        var(--color-fondo-claro) 50%,
+        var(--color-fondo-oscuro) 75%
+    );
+    background-size: 200% 100%;
+    animation: brillo-skeleton 1.5s infinite;
+    border-radius: var(--radio-borde-suave);
+}
+
+@keyframes brillo-skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ===== Notificaciones SweetAlert con Motion ===== */
+.swal-exito {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-radius: var(--radio-borde-medio);
+}
+
+.swal-info {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border-radius: var(--radio-borde-medio);
+}
+
+/* ===== Filtros de marca con Motion ===== */
+.filtro-motion {
+    transition: all 0.2s ease;
+}
+
+.filtro-motion.activo {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* ===== Iconos animados ===== */
+.icono-animado {
+    transition: transform 0.3s ease;
+}
+
+.icono-animado:hover {
+    transform: rotate(15deg) scale(1.1);
+}
+
+/* ===== Scroll reveal para secciones ===== */
+.reveal-scroll {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s ease;
+}
+
+.reveal-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}

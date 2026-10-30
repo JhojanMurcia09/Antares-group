@@ -1,0 +1,1115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración — Antares Store JM</title>
+    <meta name="description" content="Panel de gestión de inventario, ventas y proveedores.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Hojas de estilo del proyecto -->
+    <link rel="stylesheet" href="../css/tokens/variables.css">
+    <link rel="stylesheet" href="../css/componentes/botones.css">
+    <link rel="stylesheet" href="../css/componentes/header.css">
+    <link rel="stylesheet" href="../css/componentes/tarjetas.css">
+    <link rel="stylesheet" href="../css/componentes/modal.css">
+    <link rel="stylesheet" href="../css/diseno/layout.css">
+    <link rel="stylesheet" href="../css/paginas/catalogo.css">
+
+    <!-- Estilos específicos del admin (inline) -->
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: 'Inter', sans-serif; background: var(--color-fondo, #0a0a0f); color: var(--color-texto, #f1f5f9); min-height: 100vh; }
+
+        .admin-layout { display: flex; min-height: 100vh; }
+        .admin-sidebar {
+            width: 260px; flex-shrink: 0; background: var(--color-superficie, #111118);
+            border-right: 1px solid var(--color-borde, #2a2a35); display: flex; flex-direction: column;
+            position: sticky; top: 0; height: 100vh; overflow-y: auto;
+        }
+        .admin-main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        .admin-header {
+            height: 64px; border-bottom: 1px solid var(--color-borde, #2a2a35);
+            background: rgba(17,17,24,0.8); backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 24px; position: sticky; top: 0; z-index: 10;
+        }
+        .admin-content { padding: 24px; max-width: 1400px; width: 100%; margin: 0 auto; }
+
+        .sidebar-logo { padding: 20px; border-bottom: 1px solid var(--color-borde, #2a2a35); display: flex; align-items: center; gap: 12px; }
+        .sidebar-logo-icon { width: 40px; height: 40px; border-radius: 10px; background: linear-gradient(135deg, #ef4444, #dc2626); display: flex; align-items: center; justify-content: center; color: #fff; }
+        .sidebar-logo-text h2 { margin: 0; font-size: 16px; font-weight: 700; color: #fff; }
+        .sidebar-logo-text span { font-size: 10px; color: #ef4444; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+
+        .sidebar-nav { padding: 12px; flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .nav-item {
+            display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+            border-radius: 10px; color: var(--color-texto-secundario, #94a3b8);
+            cursor: pointer; transition: all 0.2s; font-size: 14px; font-weight: 500;
+            border: none; background: transparent; width: 100%; text-align: left;
+        }
+        .nav-item:hover { background: var(--color-superficie-hover, #1a1a24); color: var(--color-texto, #f1f5f9); }
+        .nav-item.active { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+        .nav-item i { width: 20px; height: 20px; }
+
+        .sidebar-footer { padding: 16px; border-top: 1px solid var(--color-borde, #2a2a35); }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); display: flex; align-items: center; justify-content: center; color: #ef4444; font-weight: 700; font-size: 12px; }
+        .user-details p { margin: 0; font-size: 12px; }
+        .user-details .name { font-weight: 600; color: var(--color-texto, #f1f5f9); }
+        .user-details .status { color: #22c55e; font-size: 11px; display: flex; align-items: center; gap: 4px; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
+
+        .metric-badge { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 8px; background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); font-size: 12px; }
+        .metric-badge .value { font-weight: 700; color: var(--color-texto, #f1f5f9); }
+
+        .card { background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); border-radius: 14px; padding: 20px; }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--color-borde, #2a2a35); }
+        .card-title { font-size: 16px; font-weight: 700; color: var(--color-texto, #f1f5f9); display: flex; align-items: center; gap: 8px; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 11px; font-weight: 600; color: var(--color-texto-secundario, #94a3b8); text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input, .form-select {
+            padding: 10px 12px; border-radius: 10px; border: 1px solid var(--color-borde, #2a2a35);
+            background: var(--color-fondo, #0a0a0f); color: var(--color-texto, #f1f5f9);
+            font-size: 14px; font-family: inherit; transition: border-color 0.2s;
+        }
+        .form-input:focus, .form-select:focus { outline: none; border-color: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
+
+        .btn { padding: 10px 16px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; font-family: inherit; }
+        .btn-primary { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; box-shadow: 0 4px 12px rgba(239,68,68,0.3); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(239,68,68,0.4); }
+        .btn-secondary { background: var(--color-superficie, #111118); color: var(--color-texto, #f1f5f9); border: 1px solid var(--color-borde, #2a2a35); }
+        .btn-secondary:hover { background: var(--color-superficie-hover, #1a1a24); }
+        .btn-ghost { background: transparent; color: var(--color-texto-secundario, #94a3b8); }
+        .btn-ghost:hover { color: var(--color-texto, #f1f5f9); background: var(--color-superficie, #111118); }
+        .btn-sm { padding: 6px 10px; font-size: 12px; }
+        .btn-danger { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+        .btn-danger:hover { background: rgba(239,68,68,0.25); }
+
+        .table-wrapper { overflow-x: auto; border-radius: 12px; border: 1px solid var(--color-borde, #2a2a35); }
+        .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .table th { padding: 12px 14px; text-align: left; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--color-texto-secundario, #94a3b8); background: var(--color-superficie, #111118); border-bottom: 1px solid var(--color-borde, #2a2a35); white-space: nowrap; }
+        .table td { padding: 12px 14px; border-bottom: 1px solid var(--color-borde, #2a2a35); vertical-align: middle; }
+        .table tr:hover td { background: rgba(239,68,68,0.03); }
+        .table tr:last-child td { border-bottom: none; }
+
+        .badge { display: inline-flex; align-items: center; padding: 3px 8px; border-radius: 6px; font-size: 11px; font-weight: 600; }
+        .badge-success { background: rgba(34,197,94,0.15); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+        .badge-warning { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+        .badge-danger { background: rgba(239,68,68,0.15); color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+        .badge-info { background: rgba(59,130,246,0.15); color: #3b82f6; border: 1px solid rgba(59,130,246,0.3); }
+        .badge-neutral { background: var(--color-superficie, #111118); color: var(--color-texto-secundario, #94a3b8); border: 1px solid var(--color-borde, #2a2a35); }
+
+        .size-chip { display: inline-flex; align-items: center; padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 600; background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); margin: 1px; }
+        .size-chip strong { margin-left: 3px; color: var(--color-texto, #f1f5f9); }
+        .precio-original { color: var(--color-texto-secundario,#94a3b8); text-decoration: line-through; font-size: 11px; }
+        .precio-promocional { display: block; color: #22c55e; font-weight: 800; }
+        .promo-badge { display: inline-flex; margin-top: 4px; padding: 3px 7px; border-radius: 999px; background: rgba(239,68,68,.16); color: #fb7185; font-size: 10px; font-weight: 800; }
+        .imagen-preview-grid { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+        .imagen-preview { position: relative; width: 130px; height: 110px; overflow: hidden; border-radius: 10px; border: 1px solid var(--color-borde,#2a2a35); background: #08080b; }
+        .imagen-preview img { width: 100%; height: 100%; object-fit: cover; }
+        .imagen-preview span { position: absolute; left: 0; right: 0; bottom: 0; padding: 5px 7px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: linear-gradient(transparent,rgba(0,0,0,.85)); color: #fff; font-size: 10px; text-align: left; }
+        .catalog-card-img .promo-badge { position: absolute; top: 10px; left: 10px; z-index: 2; }
+        .inventario-foto-titulo { position: absolute; left: 0; right: 0; bottom: 0; padding: 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; background: linear-gradient(transparent,rgba(0,0,0,.88)); color: #fff; font-size: 10px; text-align: left; }
+        .sizes-grid.talla-editor { display: flex; flex-wrap: wrap; align-items: end; gap: 8px; }
+        .talla-editor .size-input-group { position: relative; width: 76px; }
+        .talla-editor .size-remove { position: absolute; top: -5px; right: -5px; width: 19px; height: 19px; padding: 0; border: 0; border-radius: 50%; background: #7f1d1d; color: white; cursor: pointer; }
+
+        .empty-state { text-align: center; padding: 48px 24px; color: var(--color-texto-secundario, #94a3b8); }
+        .empty-state i { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+        .toast { pointer-events: auto; padding: 12px 16px; border-radius: 10px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 8px; animation: slideIn 0.3s ease; box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .toast-success { background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.3); color: #22c55e; }
+        .toast-error { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; }
+        .toast-info { background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); color: var(--color-texto, #f1f5f9); }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        .column-menu { position: absolute; right: 24px; top: 140px; z-index: 30; background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); border-radius: 12px; padding: 16px; width: 240px; box-shadow: 0 12px 32px rgba(0,0,0,0.4); }
+        .column-menu h4 { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--color-texto-secundario, #94a3b8); margin: 0 0 12px 0; display: flex; align-items: center; gap: 6px; }
+        .column-option { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+        .column-option input { accent-color: #ef4444; }
+        .column-option label { font-size: 13px; color: var(--color-texto, #f1f5f9); cursor: pointer; }
+
+        .sizes-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        @media (min-width: 640px) { .sizes-grid { grid-template-columns: repeat(10, 1fr); } }
+        .size-input-group { text-align: center; }
+        .size-input-group label { display: block; font-size: 10px; font-weight: 700; color: var(--color-texto-secundario, #94a3b8); margin-bottom: 4px; }
+        .size-input { width: 100%; padding: 6px; text-align: center; border-radius: 8px; border: 1px solid var(--color-borde, #2a2a35); background: var(--color-fondo, #0a0a0f); color: var(--color-texto, #f1f5f9); font-size: 13px; font-weight: 700; }
+        .size-input:focus { outline: none; border-color: #ef4444; }
+
+        .cart-item { padding: 10px 0; border-bottom: 1px solid var(--color-borde, #2a2a35); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        .cart-item:last-child { border-bottom: none; }
+
+        .catalog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+        .catalog-card { background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); border-radius: 14px; overflow: hidden; transition: all 0.2s; }
+        .catalog-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .catalog-card-img { aspect-ratio: 1; overflow: hidden; background: var(--color-fondo, #0a0a0f); position: relative; }
+        .catalog-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+        .catalog-card:hover .catalog-card-img img { transform: scale(1.05); }
+        .catalog-card-body { padding: 14px; }
+        .catalog-card-title { font-weight: 700; color: var(--color-texto, #f1f5f9); font-size: 14px; margin: 0; }
+        .catalog-card-sub { font-size: 11px; color: var(--color-texto-secundario, #94a3b8); margin: 4px 0 8px; }
+        .catalog-card-price { font-size: 18px; font-weight: 800; color: #22c55e; }
+        .catalog-card-sizes { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+        .catalog-size { padding: 2px 6px; border-radius: 4px; font-size: 9px; font-weight: 600; background: var(--color-fondo, #0a0a0f); border: 1px solid var(--color-borde, #2a2a35); color: var(--color-texto-secundario, #94a3b8); }
+
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+        .modal { background: var(--color-superficie, #111118); border: 1px solid var(--color-borde, #2a2a35); border-radius: 16px; max-width: 480px; width: 100%; padding: 24px; box-shadow: 0 24px 48px rgba(0,0,0,0.5); }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 768px) {
+            .admin-sidebar { width: 100%; height: auto; position: relative; }
+            .admin-layout { flex-direction: column; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ================= ADMIN LOGIN OVERLAY ================= -->
+<div id="adminLoginOverlay" class="modal-overlay hidden">
+    <div class="modal" style="max-width:400px;">
+        <div style="text-align:center; margin-bottom:20px;">
+            <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#ef4444,#dc2626);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;color:#fff;">
+                <i data-lucide="lock" style="width:24px;height:24px;"></i>
+            </div>
+            <h2 style="margin:0; font-size:18px; font-weight:700; color:var(--color-texto,#f1f5f9);">Acceso Administrativo</h2>
+            <p style="margin:4px 0 0; font-size:12px; color:var(--color-texto-secundario,#94a3b8);">Ingresa tus credenciales de administrador</p>
+        </div>
+        <form onsubmit="handleAdminLogin(event)">
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>Usuario</label>
+                <input type="text" id="adminUser" required placeholder="Usuario" class="form-input">
+            </div>
+            <div class="form-group" style="margin-bottom:16px;">
+                <label>Contraseña</label>
+                <input type="password" id="adminPass" required placeholder="••••••••" class="form-input">
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%;">
+                <i data-lucide="log-in"></i> Acceder al Panel
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ================= ADMIN LAYOUT ================= -->
+<div class="admin-layout" style="display:none;">
+
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-icon"><i data-lucide="footprints"></i></div>
+            <div class="sidebar-logo-text">
+                <h2>Antares Store</h2>
+                <span>Panel Admin</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-tab="inventory" onclick="switchTab('inventory')">
+                <i data-lucide="package"></i> Inventario Total
+            </button>
+            <button class="nav-item" data-tab="addShoe" onclick="switchTab('addShoe')">
+                <i data-lucide="plus-circle"></i> Añadir Zapato
+            </button>
+            <button class="nav-item" data-tab="sales" onclick="switchTab('sales')">
+                <i data-lucide="shopping-cart"></i> Registrar Venta
+            </button>
+            <button class="nav-item" data-tab="suppliers" onclick="switchTab('suppliers')">
+                <i data-lucide="truck"></i> Proveedores
+            </button>
+            <button class="nav-item" data-tab="catalog" onclick="switchTab('catalog')">
+                <i data-lucide="store"></i> Catálogo Público
+            </button>
+            <a class="nav-item" href="registro.html">
+                <i data-lucide="user-plus"></i> Crear cuenta de cliente
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">AD</div>
+                <div class="user-details">
+                    <p class="name">Administrador</p>
+                    <p class="status"><span class="status-dot"></span> Activo</p>
+                </div>
+                <button class="btn btn-ghost btn-sm" onclick="handleLogout()" title="Cerrar sesión" style="margin-left:auto;">
+                    <i data-lucide="log-out"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1 id="pageTitle" style="margin:0; font-size:18px; font-weight:700; color:var(--color-texto,#f1f5f9);">Inventario Total</h1>
+            <div style="display:flex; gap:12px; align-items:center;">
+                <div class="metric-badge">
+                    <i data-lucide="package" style="width:14px;height:14px;color:#ef4444;"></i>
+                    <span style="color:var(--color-texto-secundario,#94a3b8);">Zapatos:</span>
+                    <span class="value" id="statTotalPairs">0</span>
+                </div>
+                <div class="metric-badge">
+                    <i data-lucide="alert-triangle" style="width:14px;height:14px;color:#fbbf24;"></i>
+                    <span style="color:var(--color-texto-secundario,#94a3b8);">Stock Bajo:</span>
+                    <span class="value" id="statLowStock" style="color:#fbbf24;">0</span>
+                </div>
+                <div class="metric-badge">
+                    <i data-lucide="dollar-sign" style="width:14px;height:14px;color:#22c55e;"></i>
+                    <span style="color:var(--color-texto-secundario,#94a3b8);">Ventas Hoy:</span>
+                    <span class="value" id="statTodaySales" style="color:#22c55e;">$0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="admin-content">
+
+            <!-- ========== TAB: INVENTARIO ========== -->
+            <section id="content-inventory" class="tab-content active">
+                <div style="display:grid; grid-template-columns:1fr auto; gap:12px; margin-bottom:16px; align-items:center;">
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <div style="position:relative; flex:1; min-width:200px;">
+                            <i data-lucide="search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--color-texto-secundario,#94a3b8);"></i>
+                            <input type="text" id="invSearchInput" oninput="renderInventoryTable()" placeholder="Buscar modelo, SKU, marca..." class="form-input" style="padding-left:38px; width:100%;">
+                        </div>
+                        <select id="invSupplierFilter" onchange="renderInventoryTable()" class="form-select" aria-label="Filtrar por marca">
+                            <option value="">Todas las marcas</option>
+                        </select>
+                        <select id="invSizeFilter" onchange="renderInventoryTable()" class="form-select">
+                            <option value="">Todas las Tallas</option>
+                            <option value="35">Talla 35</option><option value="36">Talla 36</option><option value="37">Talla 37</option>
+                            <option value="38">Talla 38</option><option value="39">Talla 39</option><option value="40">Talla 40</option>
+                            <option value="41">Talla 41</option><option value="42">Talla 42</option><option value="43">Talla 43</option>
+                            <option value="44">Talla 44</option>
+                        </select>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                        <button class="btn btn-secondary btn-sm" type="button" onclick="initAdmin()">
+                            <i data-lucide="refresh-cw"></i> Sincronizar
+                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="switchTab('addShoe')">
+                            <i data-lucide="plus"></i> Nuevo Zapato
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table class="table">
+                        <thead><tr id="invTableHead"></tr></thead>
+                        <tbody id="inventoryTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="invEmptyState" class="empty-state hidden">
+                    <i data-lucide="package-open"></i>
+                    <p style="margin:0; font-weight:600;">No se encontraron zapatos</p>
+                    <p style="margin:4px 0 0; font-size:12px;">Prueba cambiando los filtros o registra nuevos productos.</p>
+                </div>
+            </section>
+
+            <!-- ========== TAB: AÑADIR ZAPATO ========== -->
+            <section id="content-addShoe" class="tab-content">
+                <div class="card" style="max-width:900px; margin:0 auto;">
+                    <div class="card-header">
+                        <h2 class="card-title"><i data-lucide="plus-circle" style="color:#ef4444;"></i> <span id="formShoeTitle">Registrar Nuevo Zapato</span></h2>
+                    </div>
+                    <form id="shoeForm" onsubmit="handleSaveShoe(event)">
+                        <input type="hidden" id="shoeEditId" value="">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Nombre del Modelo *</label>
+                                <input type="text" id="shoeName" required placeholder="Ej: Air Max Runner" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Marca / Línea *</label>
+                                <input type="text" id="shoeBrand" required placeholder="Ej: Nike, Adidas..." class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Código SKU / Ref *</label>
+                                <input type="text" id="shoeSKU" required placeholder="Ej: ZAP-2026-001" class="form-input">
+                            </div>
+                        </div>
+                        <div class="form-grid" style="margin-top:16px;">
+                            <div class="form-group">
+                                <label>Precio original (COP) *</label>
+                                <div style="position:relative;">
+                                    <input type="number" id="shoeSalePrice" min="1" step="1" required placeholder="249000" class="form-input" style="width:100%;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Categoría</label>
+                                <input type="text" id="shoeCategory" placeholder="Ej: clásico, deportivo" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Etiqueta de promoción</label>
+                                <input type="text" id="shoePromotionLabel" maxlength="40" value="Oferta" placeholder="Oferta" class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label>Precio de promoción (COP)</label>
+                                <input type="number" id="shoePromotionPrice" min="1" step="1" placeholder="Opcional" class="form-input">
+                            </div>
+                            <div class="form-group" style="justify-content:flex-end;">
+                                <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:13px;">
+                                    <input type="checkbox" id="shoePromotionActive"> Activar promoción
+                                </label>
+                                <label style="display:flex;align-items:center;gap:8px;text-transform:none;font-size:13px;">
+                                    <input type="checkbox" id="shoeFeatured"> Destacar en tienda
+                                </label>
+                            </div>
+                            <div class="form-group" style="grid-column:1/-1;">
+                                <label>Descripción</label>
+                                <textarea id="shoeDescription" rows="3" maxlength="5000" class="form-input" style="resize:vertical;"></textarea>
+                            </div>
+                            <div class="form-group" style="grid-column:1/-1;">
+                                <label>Ruta de imagen principal existente (opcional)</label>
+                                <input type="text" id="shoeImage" placeholder="../assets/imagenes/adidas/adidas-1.jpeg" class="form-input">
+                            </div>
+                            <div class="form-group" style="grid-column:1/-1;">
+                                <label>Subir hasta 8 imágenes JPG, PNG o WebP (máximo 5 MB cada una)</label>
+                                <input type="file" id="shoeImages" accept="image/jpeg,image/png,image/webp" multiple class="form-input">
+                                <small id="shoeImageHelp">Al seleccionar imágenes nuevas, se reemplazará la galería actual. El título del modelo se muestra abajo a la izquierda.</small>
+                                <div id="shoeImagePreview" class="imagen-preview-grid"></div>
+                            </div>
+                        </div>
+                        <div style="margin-top:20px; padding:16px; background:var(--color-fondo,#0a0a0f); border-radius:12px; border:1px solid var(--color-borde,#2a2a35);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <span style="font-size:12px; font-weight:700; text-transform:uppercase; color:var(--color-texto-secundario,#94a3b8); display:flex; align-items:center; gap:6px;">
+                                    <i data-lucide="ruler" style="width:14px;height:14px;color:#ef4444;"></i> Stock por Talla
+                                </span>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="agregarTallaPersonalizada()">+ Añadir talla</button>
+                            </div>
+                            <div class="sizes-grid talla-editor" id="sizesGridContainer"></div>
+                        </div>
+                        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; padding-top:16px; border-top:1px solid var(--color-borde,#2a2a35);">
+                            <button type="button" class="btn btn-secondary" onclick="resetShoeForm()">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">
+                                <i data-lucide="save"></i> <span id="shoeSubmitBtnText">Guardar Zapato</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ========== TAB: REGISTRAR VENTA ========== -->
+            <section id="content-sales" class="tab-content">
+                <div style="display:grid; grid-template-columns: 1fr 400px; gap:20px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title"><i data-lucide="shopping-cart" style="color:#ef4444;"></i> 1. Seleccionar Producto</h2>
+                        </div>
+                        <div class="form-group" style="margin-bottom:16px;">
+                            <label>Buscar Zapato en Inventario</label>
+                            <select id="saleShoeSelect" onchange="handleSaleShoeChange()" class="form-select"></select>
+                        </div>
+                        <div id="saleShoeDetail" class="hidden" style="padding:16px; background:var(--color-fondo,#0a0a0f); border-radius:12px; border:1px solid var(--color-borde,#2a2a35);">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:12px; border-bottom:1px solid var(--color-borde,#2a2a35); margin-bottom:12px;">
+                                <div>
+                                    <h3 id="saleDetailName" style="margin:0; font-weight:700; color:var(--color-texto,#f1f5f9);">Nombre Zapato</h3>
+                                    <p id="saleDetailSub" style="margin:4px 0 0; font-size:12px; color:var(--color-texto-secundario,#94a3b8);">Marca | SKU</p>
+                                </div>
+                                <span id="saleDetailPrice" style="font-size:20px; font-weight:800; color:#22c55e;">$0.00</span>
+                            </div>
+                            <div style="margin-bottom:12px;">
+                                <label style="font-size:11px; font-weight:600; color:var(--color-texto-secundario,#94a3b8); text-transform:uppercase; display:block; margin-bottom:8px;">Selecciona la Talla:</label>
+                                <div id="saleSizesContainer" style="display:flex; flex-wrap:wrap; gap:6px;"></div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <span style="font-size:12px; font-weight:600; color:var(--color-texto-secundario,#94a3b8);">Cantidad:</span>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="adjustSaleQty(-1)">-</button>
+                                    <input type="number" id="saleQtyInput" value="1" min="1" readonly class="form-input" style="width:60px; text-align:center;">
+                                    <button type="button" class="btn btn-secondary btn-sm" onclick="adjustSaleQty(1)">+</button>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label>Vendedor / Agente</label>
+                                <select id="saleAgentSelect" class="form-select">
+                                    <option value="@val">@val</option>
+                                    <option value="@roky">@roky</option>
+                                    <option value="@jhon">@jhon</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn btn-primary" style="width:100%;" onclick="addCurrentItemToCart()">
+                                <i data-lucide="shopping-cart"></i> Agregar al Ticket
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card" style="display:flex; flex-direction:column;">
+                        <div class="card-header">
+                            <h2 class="card-title"><i data-lucide="receipt" style="color:#22c55e;"></i> Ticket de Venta</h2>
+                            <span id="ticketItemCount" class="badge badge-neutral">0 ítems</span>
+                        </div>
+                        <div id="cartItemsList" style="flex:1; max-height:300px; overflow-y:auto; margin-bottom:16px;">
+                            <div id="cartEmptyState" style="text-align:center; padding:32px 16px; color:var(--color-texto-secundario,#94a3b8); font-size:13px;">
+                                El ticket está vacío. Selecciona un zapato y una talla.
+                            </div>
+                        </div>
+                        <div style="border-top:1px solid var(--color-borde,#2a2a35); padding-top:16px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                                <span style="font-size:12px; color:var(--color-texto-secundario,#94a3b8);">Método de Pago:</span>
+                                <select id="paymentMethodSelect" class="form-select" style="width:auto; font-size:12px;">
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Tarjeta">Tarjeta Débito/Crédito</option>
+                                    <option value="Transferencia">Transferencia Nequi/Daviplata</option>
+                                </select>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+                                <span style="font-size:16px; font-weight:800; color:var(--color-texto,#f1f5f9);">TOTAL:</span>
+                                <span id="cartTotalDisplay" style="font-size:24px; font-weight:800; color:#22c55e;">$0.00</span>
+                            </div>
+                            <button type="button" id="btnCompleteSale" class="btn btn-primary" style="width:100%;" disabled onclick="processSaleTransaction()">
+                                <i data-lucide="check-circle"></i> Confirmar & Registrar Venta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== TAB: PROVEEDORES ========== -->
+            <section id="content-suppliers" class="tab-content">
+                <div style="display:grid; grid-template-columns: 400px 1fr; gap:20px;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title"><i data-lucide="truck" style="color:#ef4444;"></i> Registrar Proveedor</h2>
+                        </div>
+                        <form onsubmit="handleSaveSupplier(event)">
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label>Nombre o Empresa *</label>
+                                <input type="text" id="supName" required placeholder="Ej: Calzados del Norte S.A." class="form-input">
+                            </div>
+                            <div class="form-group" style="margin-bottom:12px;">
+                                <label>Persona de Contacto</label>
+                                <input type="text" id="supContact" placeholder="Ej: Carlos Mendoza" class="form-input">
+                            </div>
+                            <div class="form-group" style="margin-bottom:16px;">
+                                <label>Teléfono / WhatsApp</label>
+                                <input type="text" id="supPhone" placeholder="Ej: +57 300 123 4567" class="form-input">
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width:100%;">
+                                <i data-lucide="plus"></i> Guardar Proveedor
+                            </button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title"><i data-lucide="list" style="color:#fbbf24;"></i> Lista de Proveedores</h2>
+                        </div>
+                        <div class="table-wrapper">
+                            <table class="table">
+                                <thead><tr><th>Empresa</th><th>Contacto</th><th>Teléfono</th><th style="text-align:right;">Acción</th></tr></thead>
+                                <tbody id="suppliersTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== TAB: CATÁLOGO ========== -->
+            <section id="content-catalog" class="tab-content">
+                <div style="margin-bottom:16px;">
+                    <h2 style="margin:0; font-size:20px; font-weight:700; color:var(--color-texto,#f1f5f9);">Catálogo de Zapatos (Vista Cliente)</h2>
+                    <p style="margin:4px 0 0; font-size:12px; color:var(--color-texto-secundario,#94a3b8);">Las imágenes se cargan desde src/assets/imagenes/</p>
+                </div>
+                <div class="catalog-grid" id="catalogGrid"></div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+<!-- QUICK SUPPLIER MODAL -->
+<div id="quickSupplierModal" class="modal-overlay hidden">
+    <div class="modal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--color-borde,#2a2a35);">
+            <h3 style="margin:0; font-weight:700; color:var(--color-texto,#f1f5f9);">Añadir Proveedor Rápido</h3>
+            <button class="btn btn-ghost btn-sm" onclick="closeQuickSupplierModal()"><i data-lucide="x"></i></button>
+        </div>
+        <form onsubmit="handleQuickSupplierSave(event)">
+            <div class="form-group" style="margin-bottom:12px;">
+                <label>Nombre Proveedor *</label>
+                <input type="text" id="quickSupName" required placeholder="Nombre de la empresa" class="form-input">
+            </div>
+            <div class="form-group" style="margin-bottom:16px;">
+                <label>Teléfono</label>
+                <input type="text" id="quickSupPhone" placeholder="Número de contacto" class="form-input">
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:8px;">
+                <button type="button" class="btn btn-secondary" onclick="closeQuickSupplierModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar y Seleccionar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// ================= STATE =================
+const DEFAULT_SIZES = [35,36,37,38,39,40,41,42,43,44,45];
+
+const INITIAL_SUPPLIERS = [
+    { id:'sup-1', name:'Distribuidora Calzado Real', contact:'Juan Pérez', phone:'+57 310 555 1234' },
+    { id:'sup-2', name:'Importaciones SportFit', contact:'María Gómez', phone:'+57 320 444 9876' },
+    { id:'sup-3', name:'Industria Cuero Elite', contact:'Roberto Silva', phone:'+57 301 777 3322' }
+];
+
+const ALL_COLUMNS = [
+    { key:'image', label:'Imagen', default:true },
+    { key:'name', label:'Modelo / SKU', default:true },
+    { key:'brand', label:'Marca', default:true },
+    { key:'agent', label:'Agente', default:true },
+    { key:'category', label:'Categoría', default:false },
+    { key:'supplier', label:'Proveedor', default:true },
+    { key:'costPrice', label:'Precio Costo', default:false },
+    { key:'salePrice', label:'Precio Venta', default:true },
+    { key:'margin', label:'Margen %', default:false },
+    { key:'sizes', label:'Tallas & Stock', default:true },
+    { key:'total', label:'Stock Total', default:true },
+    { key:'actions', label:'Acciones', default:true },
+];
+
+let suppliers = JSON.parse(localStorage.getItem('antares_suppliers')) || INITIAL_SUPPLIERS;
+let shoes = [];
+let salesHistory = JSON.parse(localStorage.getItem('antares_sales')) || [];
+let columnConfig = JSON.parse(localStorage.getItem('antares_columns')) || null;
+if (!columnConfig) { columnConfig = {}; ALL_COLUMNS.forEach(c => { columnConfig[c.key] = c.default; }); }
+let currentCart = [];
+let selectedSaleShoeId = null;
+let selectedSaleSize = null;
+
+// ================= INIT =================
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.lucide) lucide.createIcons();
+});
+
+function handleAdminLogin(e) {
+    e.preventDefault();
+    showToast('El acceso administrativo requiere validar la sesión con el servidor.', 'error');
+}
+
+function initAdmin() {
+    renderSizesGridInputs();
+    populateSupplierDropdowns();
+    renderColumnCheckboxes();
+    renderColumnHeaders();
+    updateGlobalStats();
+    switchTab('inventory');
+    if (window.lucide) lucide.createIcons();
+}
+
+function saveState() {
+    localStorage.setItem('antares_suppliers', JSON.stringify(suppliers));
+    localStorage.setItem('antares_sales', JSON.stringify(salesHistory));
+    localStorage.setItem('antares_columns', JSON.stringify(columnConfig));
+    updateGlobalStats();
+}
+
+function handleLogout() {
+    sessionStorage.removeItem('antares_admin_auth');
+    window.location.href = 'login.html';
+}
+
+// ================= TABS =================
+function switchTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
+    const target = document.getElementById(`content-${tabName}`);
+    if (target) target.classList.add('active');
+    const btn = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+    if (btn) btn.classList.add('active');
+    const titles = { inventory:'Inventario Total de Calzado', addShoe:'Añadir / Modificar Zapato', sales:'Punto de Venta / Registrar Venta', suppliers:'Gestión de Proveedores', catalog:'Catálogo Público' };
+    document.getElementById('pageTitle').textContent = titles[tabName] || 'Dashboard';
+    if (tabName === 'inventory') renderInventoryTable();
+    if (tabName === 'sales') setupSalesModule();
+    if (tabName === 'suppliers') renderSuppliersTable();
+    if (tabName === 'catalog') renderCatalog();
+    if (window.lucide) lucide.createIcons();
+}
+
+// ================= STATS =================
+function updateGlobalStats() {
+    let totalPairs = 0, lowStockCount = 0;
+    shoes.forEach(shoe => {
+        const t = Object.values(shoe.sizes || {}).reduce((a,b) => a + Number(b), 0);
+        totalPairs += t;
+        if (t <= 3) lowStockCount++;
+    });
+    const today = new Date().toISOString().split('T')[0];
+    const todaySales = salesHistory.filter(s => s.date && s.date.startsWith(today)).reduce((s,x) => s + Number(x.total), 0);
+    document.getElementById('statTotalPairs').textContent = totalPairs;
+    document.getElementById('statLowStock').textContent = lowStockCount;
+    document.getElementById('statTodaySales').textContent = `$${todaySales.toFixed(2)}`;
+}
+
+// ================= COLUMN CONFIG =================
+function renderColumnCheckboxes() {
+    const container = document.getElementById('columnCheckboxes');
+    container.innerHTML = '';
+    ALL_COLUMNS.forEach(col => {
+        const div = document.createElement('div');
+        div.className = 'column-option';
+        div.innerHTML = `<input type="checkbox" id="col_${col.key}" ${columnConfig[col.key] ? 'checked' : ''} onchange="toggleColumn('${col.key}')">
+            <label for="col_${col.key}">${col.label}</label>`;
+        container.appendChild(div);
+    });
+}
+function toggleColumn(key) {
+    columnConfig[key] = document.getElementById(`col_${key}`).checked;
+    saveState();
+    renderColumnHeaders();
+    renderInventoryTable();
+}
+function toggleColumnMenu() {
+    document.getElementById('columnMenu').classList.toggle('hidden');
+}
+document.addEventListener('click', (e) => {
+    const menu = document.getElementById('columnMenu');
+    if (!menu.contains(e.target) && !e.target.closest('button[onclick="toggleColumnMenu()"]')) {
+        menu.classList.add('hidden');
+    }
+});
+
+function renderColumnHeaders() {
+    const thead = document.getElementById('invTableHead');
+    thead.innerHTML = '';
+    ALL_COLUMNS.forEach(col => {
+        if (!columnConfig[col.key]) return;
+        const th = document.createElement('th');
+        th.textContent = col.label;
+        if (col.key === 'total' || col.key === 'actions') th.style.textAlign = 'center';
+        if (col.key === 'salePrice' || col.key === 'costPrice' || col.key === 'margin') th.style.textAlign = 'right';
+        thead.appendChild(th);
+    });
+}
+
+// ================= INVENTORY TABLE =================
+function renderInventoryTable() {
+    const tbody = document.getElementById('inventoryTableBody');
+    const emptyState = document.getElementById('invEmptyState');
+    const searchVal = document.getElementById('invSearchInput').value.toLowerCase();
+    const supplierFilter = document.getElementById('invSupplierFilter').value;
+    const sizeFilter = document.getElementById('invSizeFilter').value;
+    tbody.innerHTML = '';
+
+    const filtered = shoes.filter(s => {
+        const matchesSearch = s.name.toLowerCase().includes(searchVal) || s.brand.toLowerCase().includes(searchVal) || (s.sku && s.sku.toLowerCase().includes(searchVal));
+        const matchesSupplier = !supplierFilter || s.supplierId === supplierFilter;
+        const matchesSize = !sizeFilter || (s.sizes[sizeFilter] && Number(s.sizes[sizeFilter]) > 0);
+        return matchesSearch && matchesSupplier && matchesSize;
+    });
+
+    if (filtered.length === 0) { emptyState.classList.remove('hidden'); return; }
+    emptyState.classList.add('hidden');
+
+    filtered.forEach(shoe => {
+        const supplierObj = suppliers.find(sup => sup.id === shoe.supplierId);
+        const supplierName = supplierObj ? supplierObj.name : 'Desconocido';
+        const totalStock = Object.values(shoe.sizes || {}).reduce((a,b) => a + Number(b), 0);
+        const margin = shoe.costPrice > 0 ? ((shoe.salePrice - shoe.costPrice) / shoe.salePrice * 100).toFixed(1) : '0';
+
+        let sizesHTML = '<div style="display:flex; flex-wrap:wrap; gap:2px; max-width:200px;">';
+        DEFAULT_SIZES.forEach(sz => {
+            const qty = shoe.sizes[sz] || 0;
+            if (qty > 0) sizesHTML += `<span class="size-chip">T${sz}:<strong>${qty}</strong></span>`;
+        });
+        sizesHTML += '</div>';
+
+        const tr = document.createElement('tr');
+        let html = '';
+        ALL_COLUMNS.forEach(col => {
+            if (!columnConfig[col.key]) return;
+            switch(col.key) {
+                case 'image':
+                    html += `<td><div style="width:48px;height:48px;border-radius:8px;overflow:hidden;background:var(--color-fondo,#0a0a0f);border:1px solid var(--color-borde,#2a2a35);"><img src="../${escapeAttr(shoe.image||'')}" alt="${escapeHTML(shoe.name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"></div></td>`;
+                    break;
+                case 'name':
+                    html += `<td><p style="margin:0;font-weight:700;color:var(--color-texto,#f1f5f9);font-size:13px;">${escapeHTML(shoe.name)}</p><p style="margin:2px 0 0;font-size:11px;color:var(--color-texto-secundario,#94a3b8);font-family:monospace;">${escapeHTML(shoe.brand)} ${shoe.sku ? '• ' + escapeHTML(shoe.sku) : ''}</p></td>`;
+                    break;
+                case 'brand':
+                    html += `<td style="font-size:12px;color:var(--color-texto,#f1f5f9);font-weight:500;">${escapeHTML(shoe.brand)}</td>`;
+                    break;
+                case 'agent':
+                    html += `<td><span class="badge badge-info">${escapeHTML(shoe.agent || '-')}</span></td>`;
+                    break;
+                case 'category':
+                    html += `<td style="font-size:12px;color:var(--color-texto-secundario,#94a3b8);">${escapeHTML(shoe.category || '-')}</td>`;
+                    break;
+                case 'supplier':
+                    html += `<td style="font-size:12px;color:var(--color-texto,#f1f5f9);font-weight:500;">${escapeHTML(supplierName)}</td>`;
+                    break;
+                case 'costPrice':
+                    html += `<td style="text-align:right;font-size:12px;color:var(--color-texto-secundario,#94a3b8);">$${Number(shoe.costPrice).toFixed(2)}</td>`;
+                    break;
+                case 'salePrice':
+                    html += `<td style="text-align:right;font-weight:700;color:#22c55e;font-size:13px;">$${Number(shoe.salePrice).toFixed(2)}</td>`;
+                    break;
+                case 'margin':
+                    html += `<td style="text-align:right;font-size:12px;font-weight:700;color:${margin < 0 ? '#ef4444' : '#22c55e'};">${margin}%</td>`;
+                    break;
+                case 'sizes':
+                    html += `<td>${sizesHTML || '<span style="font-size:11px;color:var(--color-texto-secundario,#94a3b8);font-style:italic;">Sin stock</span>'}</td>`;
+                    break;
+                case 'total':
+                    html += `<td style="text-align:center;">${
+                        totalStock === 0 ? '<span class="badge badge-danger">Agotado</span>'
+                        : totalStock <= 3 ? `<span class="badge badge-warning">${totalStock} (Bajo)</span>`
+                        : `<span class="badge badge-neutral">${totalStock} unid.</span>`
+                    }</td>`;
+                    break;
+                case 'actions':
+                    html += `<td style="text-align:right;">
+                        <button class="btn btn-ghost btn-sm" onclick="editShoe('${shoe.id}')" title="Editar"><i data-lucide="edit" style="width:14px;height:14px;"></i></button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteShoe('${shoe.id}')" title="Eliminar"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+                    </td>`;
+                    break;
+            }
+        });
+        tr.innerHTML = html;
+        tbody.appendChild(tr);
+    });
+    if (window.lucide) lucide.createIcons();
+}
+
+// ================= ADD/EDIT SHOE =================
+function renderSizesGridInputs() {
+    const container = document.getElementById('sizesGridContainer');
+    container.innerHTML = '';
+    DEFAULT_SIZES.forEach(sz => {
+        const div = document.createElement('div');
+        div.className = 'size-input-group';
+        div.innerHTML = `<label>T${sz}</label><input type="number" id="sizeInput_${sz}" min="0" value="0" class="size-input">`;
+        container.appendChild(div);
+    });
+}
+function calculateMargin() {
+    const cost = parseFloat(document.getElementById('shoeCostPrice').value) || 0;
+    const sale = parseFloat(document.getElementById('shoeSalePrice').value) || 0;
+    const badge = document.getElementById('marginBadge');
+    if (cost > 0 && sale > 0) {
+        const margin = ((sale - cost) / sale) * 100;
+        badge.textContent = `Margen: ${margin.toFixed(1)}%`;
+        badge.style.background = margin < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(34,197,94,0.2)';
+        badge.style.color = margin < 0 ? '#ef4444' : '#22c55e';
+    } else { badge.textContent = 'Margen: 0%'; }
+}
+function handleSaveShoe(e) {
+    e.preventDefault();
+    const editId = document.getElementById('shoeEditId').value;
+    const name = document.getElementById('shoeName').value.trim();
+    const brand = document.getElementById('shoeBrand').value.trim();
+    const sku = document.getElementById('shoeSKU').value.trim();
+    const supplierId = document.getElementById('shoeSupplierSelect').value;
+    const agent = document.getElementById('shoeAgentSelect').value;
+    const costPrice = parseFloat(document.getElementById('shoeCostPrice').value);
+    const salePrice = parseFloat(document.getElementById('shoeSalePrice').value);
+    const category = document.getElementById('shoeCategory').value;
+    const image = document.getElementById('shoeImage').value.trim();
+    const sizesObj = {};
+    DEFAULT_SIZES.forEach(sz => { sizesObj[sz] = parseInt(document.getElementById(`sizeInput_${sz}`).value) || 0; });
+
+    if (editId) {
+        const idx = shoes.findIndex(s => s.id === editId);
+        if (idx !== -1) shoes[idx] = { id: editId, name, brand, sku, supplierId, agent, category, costPrice, salePrice, image, sizes: sizesObj };
+        showToast('Zapato actualizado', 'success');
+    } else {
+        shoes.push({ id: 'shoe-' + Date.now(), name, brand, sku, supplierId, agent, category, costPrice, salePrice, image, sizes: sizesObj });
+        showToast('Nuevo zapato guardado', 'success');
+    }
+    saveState();
+    resetShoeForm();
+    switchTab('inventory');
+}
+function editShoe(id) {
+    const shoe = shoes.find(s => s.id === id);
+    if (!shoe) return;
+    switchTab('addShoe');
+    document.getElementById('formShoeTitle').textContent = 'Modificar Zapato';
+    document.getElementById('shoeSubmitBtnText').textContent = 'Actualizar Cambios';
+    document.getElementById('shoeEditId').value = shoe.id;
+    document.getElementById('shoeName').value = shoe.name;
+    document.getElementById('shoeBrand').value = shoe.brand;
+    document.getElementById('shoeSKU').value = shoe.sku || '';
+    document.getElementById('shoeSupplierSelect').value = shoe.supplierId;
+    document.getElementById('shoeAgentSelect').value = shoe.agent || '';
+    document.getElementById('shoeCostPrice').value = shoe.costPrice;
+    document.getElementById('shoeSalePrice').value = shoe.salePrice;
+    document.getElementById('shoeCategory').value = shoe.category || 'Deportivo';
+    document.getElementById('shoeImage').value = shoe.image || '';
+    DEFAULT_SIZES.forEach(sz => { document.getElementById(`sizeInput_${sz}`).value = shoe.sizes[sz] || 0; });
+    calculateMargin();
+}
+function deleteShoe(id) {
+    Swal.fire({ title: '¿Eliminar zapato?', text: 'Esta acción no se puede deshacer.', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#64748b', confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' }).then(result => {
+        if (result.isConfirmed) {
+            shoes = shoes.filter(s => s.id !== id);
+            saveState();
+            renderInventoryTable();
+            showToast('Zapato eliminado', 'info');
+        }
+    });
+}
+function resetShoeForm() {
+    document.getElementById('shoeForm').reset();
+    document.getElementById('shoeEditId').value = '';
+    document.getElementById('formShoeTitle').textContent = 'Registrar Nuevo Zapato';
+    document.getElementById('shoeSubmitBtnText').textContent = 'Guardar Zapato';
+    DEFAULT_SIZES.forEach(sz => { document.getElementById(`sizeInput_${sz}`).value = 0; });
+    calculateMargin();
+}
+
+// ================= SALES =================
+function setupSalesModule() {
+    const select = document.getElementById('saleShoeSelect');
+    select.innerHTML = '<option value="">-- Selecciona un zapato --</option>';
+    shoes.forEach(shoe => {
+        const t = Object.values(shoe.sizes || {}).reduce((a,b) => a + Number(b), 0);
+        if (t > 0) {
+            const price = shoe.promotionActive ? shoe.promotionPrice : shoe.salePrice;
+            select.innerHTML += `<option value="${shoe.id}">${escapeHTML(shoe.name)} - ${escapeHTML(shoe.brand)} (${formatearPrecio(price)})</option>`;
+        }
+    });
+    document.getElementById('saleShoeDetail').classList.add('hidden');
+    selectedSaleShoeId = null; selectedSaleSize = null;
+}
+function handleSaleShoeChange() {
+    const shoeId = document.getElementById('saleShoeSelect').value;
+    const detailBox = document.getElementById('saleShoeDetail');
+    if (!shoeId) { detailBox.classList.add('hidden'); return; }
+    const shoe = shoes.find(s => s.id === shoeId);
+    if (!shoe) return;
+    selectedSaleShoeId = shoe.id; selectedSaleSize = null;
+    document.getElementById('saleQtyInput').value = 1;
+    document.getElementById('saleDetailName').textContent = shoe.name;
+    document.getElementById('saleDetailSub').textContent = `${shoe.brand} | SKU: ${shoe.sku || 'N/A'}`;
+    document.getElementById('saleDetailPrice').textContent = `$${Number(shoe.salePrice).toFixed(2)}`;
+    const container = document.getElementById('saleSizesContainer');
+    container.innerHTML = '';
+    DEFAULT_SIZES.forEach(sz => {
+        const stock = shoe.sizes[sz] || 0;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        if (stock > 0) {
+            btn.className = 'btn btn-secondary btn-sm';
+            btn.style.flexDirection = 'column';
+            btn.innerHTML = `<span>Talla ${sz}</span><span style="font-size:9px;color:#22c55e;">${stock} disp.</span>`;
+            btn.onclick = () => selectSaleSize(sz, btn);
+        } else {
+            btn.disabled = true;
+            btn.className = 'btn btn-secondary btn-sm';
+            btn.style.opacity = '0.4';
+            btn.style.cursor = 'not-allowed';
+            btn.innerHTML = `<span>Talla ${sz}</span><span style="font-size:9px;color:#ef4444;">Agotada</span>`;
+        }
+        container.appendChild(btn);
+    });
+    detailBox.classList.remove('hidden');
+    if (window.lucide) lucide.createIcons();
+}
+function selectSaleSize(size, btnEl) {
+    selectedSaleSize = size;
+    const all = document.getElementById('saleSizesContainer').querySelectorAll('button');
+    all.forEach(b => { b.style.borderColor = ''; b.style.background = ''; });
+    btnEl.style.borderColor = '#ef4444';
+    btnEl.style.background = 'rgba(239,68,68,0.15)';
+}
+function adjustSaleQty(delta) {
+    if (!selectedSaleShoeId || !selectedSaleSize) { showToast('Primero selecciona una talla', 'info'); return; }
+    const shoe = shoes.find(s => s.id === selectedSaleShoeId);
+    const stock = shoe.sizes[selectedSaleSize] || 0;
+    const input = document.getElementById('saleQtyInput');
+    let cur = parseInt(input.value) || 1;
+    cur += delta;
+    if (cur < 1) cur = 1;
+    if (cur > stock) { cur = stock; showToast(`Stock máximo para Talla ${selectedSaleSize}: ${stock}`, 'info'); }
+    input.value = cur;
+}
+function addCurrentItemToCart() {
+    if (!selectedSaleShoeId || !selectedSaleSize) { showToast('Debes seleccionar una talla', 'error'); return; }
+    const shoe = shoes.find(s => s.id === selectedSaleShoeId);
+    const qty = parseInt(document.getElementById('saleQtyInput').value) || 1;
+    const idx = currentCart.findIndex(i => i.shoeId === shoe.id && i.size === selectedSaleSize);
+    if (idx !== -1) currentCart[idx].qty += qty;
+    else currentCart.push({ shoeId: shoe.id, name: shoe.name, brand: shoe.brand, size: selectedSaleSize, price: shoe.salePrice, qty, agent: document.getElementById('saleAgentSelect').value });
+    showToast(`Agregado: Talla ${selectedSaleSize}`, 'success');
+    renderCart();
+}
+function renderCart() {
+    const container = document.getElementById('cartItemsList');
+    const totalDisp = document.getElementById('cartTotalDisplay');
+    const countDisp = document.getElementById('ticketItemCount');
+    const btn = document.getElementById('btnCompleteSale');
+    container.innerHTML = '';
+    if (currentCart.length === 0) {
+        container.innerHTML = '<div style="text-align:center;padding:32px 16px;color:var(--color-texto-secundario,#94a3b8);font-size:13px;">El ticket está vacío. Selecciona un zapato y una talla.</div>';
+        totalDisp.textContent = '$0.00'; countDisp.textContent = '0 ítems'; btn.disabled = true; return;
+    }
+    let grand = 0, qtyTotal = 0;
+    currentCart.forEach((item, i) => {
+        const sub = item.price * item.qty; grand += sub; qtyTotal += item.qty;
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        div.innerHTML = `
+            <div style="flex:1;">
+                <p style="margin:0;font-weight:700;color:var(--color-texto,#f1f5f9);font-size:13px;">${escapeHTML(item.name)}</p>
+                <p style="margin:2px 0 0;font-size:11px;color:var(--color-texto-secundario,#94a3b8);">Talla: <strong style="color:#ef4444;">${item.size}</strong> | Cant: ${item.qty} x $${Number(item.price).toFixed(2)} | ${escapeHTML(item.agent)}</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-weight:700;color:#22c55e;font-size:14px;">$${sub.toFixed(2)}</span>
+                <button class="btn btn-ghost btn-sm" onclick="removeFromCart(${i})"><i data-lucide="x" style="width:12px;height:12px;"></i></button>
+            </div>`;
+        container.appendChild(div);
+    });
+    totalDisp.textContent = `$${grand.toFixed(2)}`;
+    countDisp.textContent = `${qtyTotal} ítems`;
+    btn.disabled = false;
+    if (window.lucide) lucide.createIcons();
+}
+function removeFromCart(i) { currentCart.splice(i, 1); renderCart(); }
+function processSaleTransaction() {
+    if (currentCart.length === 0) return;
+    currentCart.forEach(item => {
+        const shoe = shoes.find(s => s.id === item.shoeId);
+        if (shoe && shoe.sizes[item.size] !== undefined) shoe.sizes[item.size] = Math.max(0, shoe.sizes[item.size] - item.qty);
+    });
+    const saleEntry = {
+        id: 'sale-' + Date.now(),
+        date: new Date().toISOString(),
+        items: [...currentCart],
+        total: currentCart.reduce((s, i) => s + (i.price * i.qty), 0),
+        paymentMethod: document.getElementById('paymentMethodSelect').value,
+        agent: currentCart[0].agent
+    };
+    salesHistory.push(saleEntry);
+    saveState();
+    currentCart = []; renderCart(); setupSalesModule();
+    showToast('¡Venta registrada e inventario actualizado!', 'success');
+}
+
+// ================= SUPPLIERS =================
+function renderSuppliersTable() {
+    const tbody = document.getElementById('suppliersTableBody');
+    tbody.innerHTML = '';
+    suppliers.forEach(sup => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td style="font-weight:700;color:var(--color-texto,#f1f5f9);">${escapeHTML(sup.name)}</td>
+            <td style="font-size:12px;color:var(--color-texto-secundario,#94a3b8);">${escapeHTML(sup.contact || 'N/A')}</td>
+            <td style="font-size:12px;font-family:monospace;color:var(--color-texto-secundario,#94a3b8);">${escapeHTML(sup.phone || 'N/A')}</td>
+            <td style="text-align:right;">
+                <button class="btn btn-danger btn-sm" onclick="deleteSupplier('${sup.id}')"><i data-lucide="trash-2" style="width:12px;height:12px;"></i></button>
+            </td>`;
+        tbody.appendChild(tr);
+    });
+    if (window.lucide) lucide.createIcons();
+}
+function handleSaveSupplier(e) {
+    e.preventDefault();
+    const name = document.getElementById('supName').value.trim();
+    const contact = document.getElementById('supContact').value.trim();
+    const phone = document.getElementById('supPhone').value.trim();
+    suppliers.push({ id: 'sup-' + Date.now(), name, contact, phone });
+    saveState();
+    populateSupplierDropdowns();
+    renderSuppliersTable();
+    document.getElementById('supName').value = '';
+    document.getElementById('supContact').value = '';
+    document.getElementById('supPhone').value = '';
+    showToast('Proveedor registrado', 'success');
+}
+function deleteSupplier(id) {
+    Swal.fire({ title: '¿Eliminar proveedor?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#ef4444', cancelButtonColor: '#64748b', confirmButtonText: 'Sí, eliminar', cancelButtonText: 'Cancelar' }).then(result => {
+        if (result.isConfirmed) {
+            suppliers = suppliers.filter(s => s.id !== id);
+            saveState();
+            populateSupplierDropdowns();
+            renderSuppliersTable();
+            showToast('Proveedor eliminado', 'info');
+        }
+    });
+}
+function populateSupplierDropdowns() {
+    const selects = [document.getElementById('shoeSupplierSelect'), document.getElementById('invSupplierFilter')];
+    selects.forEach(sel => {
+        if (!sel) return;
+        const isFilter = sel.id === 'invSupplierFilter';
+        sel.innerHTML = isFilter ? '<option value="">Todos los Proveedores</option>' : '<option value="">-- Selecciona --</option>';
+        suppliers.forEach(sup => { sel.innerHTML += `<option value="${sup.id}">${escapeHTML(sup.name)}</option>`; });
+    });
+}
+function openQuickSupplierModal() { document.getElementById('quickSupplierModal').classList.remove('hidden'); }
+function closeQuickSupplierModal() { document.getElementById('quickSupplierModal').classList.add('hidden'); }
+function handleQuickSupplierSave(e) {
+    e.preventDefault();
+    const name = document.getElementById('quickSupName').value.trim();
+    const phone = document.getElementById('quickSupPhone').value.trim();
+    const newSup = { id: 'sup-' + Date.now(), name, contact: '', phone };
+    suppliers.push(newSup);
+    saveState();
+    populateSupplierDropdowns();
+    document.getElementById('shoeSupplierSelect').value = newSup.id;
+    closeQuickSupplierModal();
+    showToast('Proveedor creado y seleccionado', 'success');
+}
+
+// ================= CATALOG =================
+function renderCatalog() {
+    const grid = document.getElementById('catalogGrid');
+    grid.innerHTML = '';
+    shoes.forEach(shoe => {
+        const total = Object.values(shoe.sizes || {}).reduce((a,b) => a + Number(b), 0);
+        if (total <= 0) return;
+        const card = document.createElement('div');
+        card.className = 'catalog-card';
+        card.innerHTML = `
+            <div class="catalog-card-img">
+                <img src="../${escapeAttr(shoe.image || '')}" alt="${escapeHTML(shoe.name)}" onerror="this.style.display='none'">
+            </div>
+            <div class="catalog-card-body">
+                <h3 class="catalog-card-title">${escapeHTML(shoe.name)}</h3>
+                <p class="catalog-card-sub">${escapeHTML(shoe.brand)} • ${escapeHTML(shoe.category || '')} • ${escapeHTML(shoe.agent || '')}</p>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span class="catalog-card-price">$${Number(shoe.salePrice).toFixed(2)}</span>
+                    <span style="font-size:11px;color:var(--color-texto-secundario,#94a3b8);">${total} disp.</span>
+                </div>
+                <div class="catalog-card-sizes">
+                    ${DEFAULT_SIZES.map(sz => { const q = shoe.sizes[sz] || 0; return q > 0 ? `<span class="catalog-size">T${sz}</span>` : ''; }).join('')}
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
+    if (grid.children.length === 0) grid.innerHTML = '<p style="text-align:center;color:var(--color-texto-secundario,#94a3b8);padding:32px;grid-column:1/-1;">No hay zapatos disponibles en el catálogo.</p>';
+}
+
+// ================= UTILS =================
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icons = { success: 'check-circle', error: 'x-circle', info: 'info' };
+    toast.innerHTML = `<i data-lucide="${icons[type] || 'info'}" style="width:16px;height:16px;"></i> <span>${escapeHTML(message)}</span>`;
+    container.appendChild(toast);
+    if (window.lucide) lucide.createIcons();
+    setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s ease'; setTimeout(() => toast.remove(), 300); }, 3000);
+}
+function escapeHTML(str) { if (!str) return ''; return String(str).replace(/[&<>'"]/g, t => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[t])); }
+function escapeAttr(str) { if (!str) return ''; return String(str).replace(/"/g, '&quot;'); }
+</script>
+<script src="../js/servicios/admin-inventario.js"></script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta — Antares Store JM</title>
+    <meta name="description" content="Crea tu cuenta en Antares Store JM y compra tus modelos favoritos.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="../css/tokens/variables.css">
+    <link rel="stylesheet" href="../css/componentes/botones.css">
+    <link rel="stylesheet" href="../css/paginas/autenticacion.css">
+    <link rel="stylesheet" href="../css/paginas/stitch.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23ef4444' stroke-width='3'/%3E%3Ctext x='50' y='55' font-family='Arial' font-weight='bold' font-size='14' text-anchor='middle' fill='%23ef4444'%3EA%3C/text%3E%3C/svg%3E">
+    <script>
+        if (sessionStorage.getItem("antares_admin_auth") !== "true") {
+            window.location.replace("admin.html");
+        }
+    </script>
+</head>
+<body class="cuerpo-autenticacion">
+
+    <!-- Fondo decorativo con orbes de luz -->
+    <div class="fondo-decorativo" aria-hidden="true">
+        <div class="orbe orbe-rojo"></div>
+        <div class="orbe orbe-indigo"></div>
+        <div class="orbe orbe-ambar"></div>
+    </div>
+
+    <main class="pantalla-autenticacion">
+        <div class="tarjeta-autenticacion">
+
+            <!-- Panel visual (marca) -->
+            <aside class="panel-visual" aria-hidden="true">
+                <div class="logo-panel-visual">
+                    <i data-lucide="footprints"></i>
+                    <span>Store JM</span>
+                </div>
+                <div class="modelo-flotante">
+                    <img src="../assets/imagenes/new-balance/new-balance-1.jpeg" alt="Modelo destacado Antares">
+                </div>
+                <div class="contenido-visual">
+                    <h1>Gestión de<br>cuentas Antares</h1>
+                    <ul class="lista-beneficios">
+                        <li><i data-lucide="check-circle"></i> Alta de cuentas para clientes</li>
+                        <li><i data-lucide="check-circle"></i> Acceso disponible solo desde el panel admin</li>
+                        <li><i data-lucide="check-circle"></i> El cliente podrá iniciar sesión en la tienda</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Panel del formulario -->
+            <section class="panel-formulario">
+                <div class="barra-superior-formulario">
+                    <a href="admin.html" class="logo-mini" aria-label="Volver al panel de administración">
+                        <i data-lucide="footprints"></i>
+                        Administración
+                    </a>
+                    <a href="admin.html" class="enlace-atras">
+                        <i data-lucide="arrow-left"></i>
+                        Panel admin
+                    </a>
+                </div>
+
+                <div class="esta-seccion-titulo">
+                    <h2>Crear cuenta de <span>cliente</span></h2>
+                    <p>Registra una cuenta para que el cliente pueda iniciar sesión.</p>
+                </div>
+                <p class="aviso-demo-auth">Formulario privado para administradores. La cuenta se guarda en este navegador.</p>
+
+                <form id="formulario-registro" class="formulario-autenticacion" novalidate>
+                    <div class="campo-formulario">
+                        <label for="nombre-registro">Nombre completo</label>
+                        <div class="campo-entradas">
+                            <i data-lucide="user"></i>
+                            <input type="text" id="nombre-registro" name="nombre" placeholder="Tu nombre" autocomplete="name" required>
+                        </div>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="correo-registro">Correo electrónico</label>
+                        <div class="campo-entradas">
+                            <i data-lucide="mail"></i>
+                            <input type="email" id="correo-registro" name="correo" placeholder="tu@correo.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="contrasena-registro">Contraseña</label>
+                        <div class="campo-entradas">
+                            <i data-lucide="lock"></i>
+                            <input type="password" id="contrasena-registro" name="contrasena" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required>
+                            <button type="button" class="boton-mostrar-contrasena" id="boton-mostrar-contrasena" aria-label="Mostrar u ocultar contraseña">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="boton-primario grande ancho-completo">
+                        <i data-lucide="user-check" style="width: 20px; height: 20px;"></i>
+                        Crear cuenta
+                    </button>
+                </form>
+
+                <p class="pie-formulario">
+                    <a href="admin.html">Volver al panel de administración</a>
+                </p>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="../js/utilidades/mensajes.js"></script>
+    <script src="../js/servicios/autenticacion-local.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const respuestaSesion = await fetch("../api/sesion.php", {
+                    credentials: "same-origin",
+                    cache: "no-store"
+                });
+                const sesion = await respuestaSesion.json();
+                if (!respuestaSesion.ok || !sesion.autenticado) {
+                    window.location.replace("admin.html");
+                    return;
+                }
+                sessionStorage.setItem("antares_admin_auth", "true");
+            } catch (error) {
+                console.error("[Antares] No fue posible validar la sesión administrativa:", error);
+                window.location.replace("admin.html");
+                return;
+            }
+
+            // Iconos Lucide de la página
+            if (window.lucide && typeof window.lucide.createIcons === "function") {
+                lucide.createIcons();
+            }
+
+            // Mostrar / ocultar contraseña
+            const botonMostrar = document.getElementById("boton-mostrar-contrasena");
+            const campoContrasena = document.getElementById("contrasena-registro");
+
+            if (botonMostrar && campoContrasena) {
+                botonMostrar.addEventListener("click", () => {
+                    const oculta = campoContrasena.type === "password";
+                    campoContrasena.type = oculta ? "text" : "password";
+                    const icono = botonMostrar.querySelector('[data-lucide]');
+                    if (icono) {
+                        icono.setAttribute("data-lucide", oculta ? "eye-off" : "eye");
+                        if (window.lucide) lucide.createIcons();
+                    }
+                });
+            }
+
+            document.getElementById("formulario-registro").addEventListener("submit", async function(evento) {
+                evento.preventDefault();
+
+                const nombre = document.getElementById("nombre-registro").value.trim();
+                const correo = document.getElementById("correo-registro").value.trim();
+                const contrasena = document.getElementById("contrasena-registro").value;
+                const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+
+                if (!nombre || !correo || !contrasena) {
+                    mostrarError("Campos incompletos", "Por favor completa todos los campos.");
+                    return;
+                }
+
+                if (!correoValido) {
+                    mostrarError("Correo no válido", "Revisa el formato de tu correo electrónico.");
+                    return;
+                }
+
+                if (contrasena.length < 6) {
+                    mostrarAdvertencia("Contraseña corta", "La contraseña debe tener al menos 6 caracteres.");
+                    return;
+                }
+
+                try {
+                    const registrada = await AutenticacionLocal.registrar(nombre, correo, contrasena);
+                    if (!registrada) {
+                        mostrarError("Correo ya registrado", "Ya existe una cuenta con ese correo. Inicia sesión o usa otro correo.");
+                        return;
+                    }
+
+                    mostrarExito("Cuenta creada", `La cuenta de ${nombre} está lista para iniciar sesión.`, 1800);
+                    setTimeout(() => {
+                        window.location.href = "admin.html";
+                    }, 1600);
+                } catch (error) {
+                    mostrarError("No se pudo crear la cuenta", error.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

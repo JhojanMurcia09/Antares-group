@@ -1,0 +1,178 @@
+/* ==========================================================================
+   Archivo: css/componentes/botones.css
+   Descripción: Estilos de botones de Antares Store JM.
+   Autor: Val
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+.boton-primario,
+.boton-secundario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espaciado-1);
+    min-height: var(--touch-minimo);
+    min-width: var(--touch-minimo);
+    padding: var(--espaciado-2) var(--espaciado-4);
+    font-size: var(--tamaño-texto-base);
+    font-weight: 600;
+    border-radius: var(--radio-borde-circulo);
+    transition: var(--transicion-rapida);
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    outline: none;
+}
+
+.boton-primario {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+.boton-primario:hover {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+    box-shadow: 0 8px 22px rgba(239, 68, 68, 0.45);
+    transform: translateY(-1px);
+}
+
+.boton-primario:active {
+    transform: translateY(0);
+}
+
+.boton-primario.cargando {
+    pointer-events: none;
+    opacity: 0.7;
+    box-shadow: none;
+}
+
+.boton-primario.ancho-completo {
+    width: 100%;
+}
+
+.boton-primario.grande {
+    padding: var(--espaciado-3) var(--espaciado-5);
+    font-size: 1.125rem;
+}
+
+.boton-secundario {
+    background-color: transparent;
+    color: var(--color-texto-principal);
+    border: 1px solid var(--color-borde-claro);
+}
+
+.boton-secundario:hover {
+    background-color: var(--color-fondo-claro);
+    border-color: var(--color-texto-principal);
+}
+
+.boton-secundario.grande {
+    padding: var(--espaciado-3) var(--espaciado-5);
+    font-size: 1.125rem;
+}
+
+/* Botones de filtro por marca */
+.boton-filtro {
+    padding: var(--espaciado-1) var(--espaciado-3);
+    min-height: var(--touch-minimo);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-texto-secundario);
+    background-color: var(--color-fondo-suave);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-circulo);
+    transition: var(--transicion-rapida);
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.boton-filtro:hover {
+    color: var(--color-texto-principal);
+    border-color: var(--color-borde-claro);
+}
+
+.boton-filtro.activo {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: #ffffff;
+    border-color: var(--color-marca-principal);
+    box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+}
+
+/* Botón eliminar item del carrito */
+.boton-eliminar-item {
+    width: var(--touch-minimo);
+    height: var(--touch-minimo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--color-texto-suave);
+    background-color: transparent;
+    border-radius: var(--radio-borde-circulo);
+    transition: var(--transicion-rapida);
+    line-height: 1;
+}
+
+.boton-eliminar-item:hover {
+    color: var(--color-error);
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Botón cerrar modal */
+.boton-cerrar-modal {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #ffffff;
+    background-color: var(--color-marca-principal);
+    border-radius: var(--radio-borde-circulo);
+    transition: var(--transicion-rapida);
+    line-height: 1;
+    z-index: 2002;
+}
+
+.boton-cerrar-modal:hover {
+    background-color: #dc2626;
+}
+
+/* Botón de WhatsApp (verde de la marca de mensajería) */
+.boton-whatsapp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--espaciado-1);
+    min-height: var(--touch-minimo);
+    padding: var(--espaciado-2) var(--espaciado-4);
+    font-size: var(--tamaño-texto-base);
+    font-weight: 600;
+    border-radius: var(--radio-borde-circulo);
+    transition: var(--transicion-rapida);
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    outline: none;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+}
+
+.boton-whatsapp:hover {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    box-shadow: 0 8px 22px rgba(16, 185, 129, 0.45);
+    transform: translateY(-1px);
+}
+
+.boton-whatsapp.grande {
+    padding: var(--espaciado-3) var(--espaciado-5);
+    font-size: 1.05rem;
+}
+
+.boton-whatsapp.ancho-completo {
+    width: 100%;
+}

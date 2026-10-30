@@ -1,0 +1,284 @@
+/* ==========================================================================
+   Archivo: css/componentes/tarjetas.css
+   Descripción: Estilos de tarjetas de producto y bento grid.
+   Autor: Val
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--espaciado-4);
+    padding: var(--espaciado-5) var(--espaciado-4);
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tarjeta-producto {
+    background: linear-gradient(145deg, #171717 0%, #0a0a0a 100%);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-grande);
+    overflow: hidden;
+    transition: var(--transicion-suave);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    cursor: pointer;
+    aspect-ratio: 1 / 1.15;
+    animation: entrada-suave 0.5s ease-out both;
+    box-shadow: var(--sombra-suave);
+}
+
+.tarjeta-producto:nth-child(1) { animation-delay: 0.1s; }
+.tarjeta-producto:nth-child(2) { animation-delay: 0.2s; }
+.tarjeta-producto:nth-child(3) { animation-delay: 0.3s; }
+.tarjeta-producto:nth-child(4) { animation-delay: 0.4s; }
+
+.tarjeta-producto:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.45);
+}
+
+.tarjeta-producto:hover .imagen-producto {
+    transform: scale(1.06);
+    filter: saturate(1.1);
+}
+
+.contenedor-imagen-producto {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);
+}
+
+.imagen-producto {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: var(--transicion-lenta);
+    display: block;
+    background: var(--color-fondo-oscuro);
+}
+
+/* Efecto de elevación al hover */
+.sombra-elevacion {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 0%,
+        rgba(0, 0, 0, 0.4) 100%
+    );
+    opacity: 0;
+    transition: var(--transicion-suave);
+}
+
+.tarjeta-producto:hover .sombra-elevacion {
+    opacity: 1;
+}
+
+.informacion-producto {
+    padding: var(--espaciado-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--espaciado-1);
+}
+
+/* Marca como píldora pequeña dentro de la tarjeta */
+.marca-producto {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--color-texto-secundario);
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-circulo);
+    padding: 4px 10px;
+    width: fit-content;
+    margin-bottom: 6px;
+}
+
+.nombre-modelo {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-texto-principal);
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.precio-producto {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--color-marca-principal);
+}
+
+/* Píldoras de talla - Touch target mínimo 48px */
+.contenedor-pildoras-talla {
+    display: flex;
+    gap: var(--espaciado-1);
+    margin-top: var(--espaciado-1);
+    flex-wrap: wrap;
+}
+
+.pildora-talla {
+    min-width: var(--touch-minimo);
+    height: var(--touch-minimo);
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-texto-secundario);
+    background-color: var(--color-fondo-oscuro);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-circulo);
+    transition: var(--transicion-rapida);
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pildora-talla:hover {
+    border-color: var(--color-borde-claro);
+    color: var(--color-texto-principal);
+}
+
+.pildora-talla.seleccionada {
+    background-color: var(--color-marca-principal);
+    color: #ffffff;
+    border-color: var(--color-marca-principal);
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+}
+
+.pildora-talla.agotada {
+    opacity: 0.4;
+    cursor: not-allowed;
+    border-color: var(--color-texto-suave);
+    background-color: var(--color-fondo-oscuro);
+}
+
+/* Estado vacío */
+.estado-vacio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--espaciado-6);
+    text-align: center;
+    color: var(--color-texto-suave);
+}
+
+.icono-vacio {
+    width: 64px;
+    height: 64px;
+    margin-bottom: var(--espaciado-3);
+    opacity: 0.5;
+}
+
+/* Esqueleto de carga en tarjeta */
+.skeleton-tarjeta {
+    background: linear-gradient(90deg, var(--color-fondo-oscuro) 25%, var(--color-fondo-claro) 50%, var(--color-fondo-oscuro) 75%);
+    background-size: 200% 100%;
+    animation: brillo-skeleton 1.5s infinite;
+    border-radius: var(--radio-borde-suave);
+}
+
+.skeleton-texto {
+    height: 16px;
+    width: 100%;
+    margin-bottom: var(--espaciado-1);
+}
+
+.skeleton-texto.pequeno {
+    width: 60%;
+}
+
+.skeleton-imagen {
+    height: 200px;
+    width: 100%;
+    border-radius: var(--radio-borde-medio);
+}
+
+/* Botón "Vista rápida" sobre la imagen de la tarjeta */
+.boton-vista-rapida {
+    position: absolute;
+    left: 50%;
+    bottom: var(--espaciado-2);
+    transform: translate(-50%, 10px);
+    opacity: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--espaciado-1);
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-texto-principal);
+    background-color: rgba(10, 10, 10, 0.85);
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-borde-circulo);
+    backdrop-filter: blur(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
+    z-index: 2;
+    pointer-events: none;
+    min-height: var(--touch-minimo);
+}
+
+.boton-vista-rapida svg {
+    width: 16px;
+    height: 16px;
+}
+
+.tarjeta-producto:hover .boton-vista-rapida,
+.tarjeta-producto:focus-within .boton-vista-rapida {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    pointer-events: auto;
+}
+
+.boton-vista-rapida:hover {
+    background-color: var(--color-marca-principal);
+    color: #ffffff;
+}
+
+/* En pantallas táctiles (sin hover) el botón siempre es visible */
+@media (hover: none) {
+    .boton-vista-rapida {
+        opacity: 1;
+        transform: translate(-50%, 0);
+        pointer-events: auto;
+    }
+}
+
+/* Badge "Destacado" en tarjetas */
+.badge-destacado {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 3;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ef4444, #b91c1c);
+    border-radius: var(--radio-borde-circulo);
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.badge-destacado svg {
+    width: 12px;
+    height: 12px;
+}
+
+@keyframes brillo-skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}

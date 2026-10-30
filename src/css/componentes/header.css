@@ -1,0 +1,266 @@
+/* ==========================================================================
+   Archivo: css/componentes/header.css
+   Descripción: Estilos del header principal y menú animado de Antares.
+   Autor: Val
+   Fecha: 2026-10-28
+   ========================================================================== */
+
+.header-principal {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    z-index: 1000;
+    background-color: rgba(10, 10, 10, 0.9);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-borde);
+    transition: var(--transicion-suave);
+}
+
+/* Estado contraído: se despega y se convierte en burbuja flotante centrada */
+.header-principal.contraido {
+    top: 14px;
+    width: min(1140px, calc(100% - 32px));
+    border-radius: 26px;
+    background-color: rgba(15, 15, 17, 0.78);
+    backdrop-filter: blur(20px) saturate(1.5);
+    -webkit-backdrop-filter: blur(20px) saturate(1.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        0 18px 46px rgba(0, 0, 0, 0.55),
+        0 6px 22px rgba(239, 68, 68, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.header-principal.contraido .contenedor-header {
+    padding-top: var(--espaciado-1);
+    padding-bottom: var(--espaciado-1);
+}
+
+.contenedor-header {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--espaciado-2) var(--espaciado-4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espaciado-4);
+}
+
+.logo-marca {
+    display: flex;
+    align-items: center;
+    gap: var(--espaciado-1);
+    z-index: 1001;
+}
+
+.icono-logo {
+    width: 40px;
+    height: 40px;
+}
+
+.texto-logo {
+    font-family: var(--fuente-titulos);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--color-texto-principal);
+    letter-spacing: -0.5px;
+}
+
+.menu-navegacion {
+    display: flex;
+    align-items: center;
+    gap: var(--espaciado-4);
+}
+
+.lista-menu {
+    display: flex;
+    gap: var(--espaciado-4);
+    align-items: center;
+}
+
+.enlace-menu {
+    position: relative;
+    font-size: var(--tamaño-texto-base);
+    font-weight: 500;
+    color: var(--color-texto-secundario);
+    transition: color var(--transicion-rapida);
+    padding: var(--espaciado-1) var(--espaciado-2);
+    border-radius: var(--radio-borde-suave);
+}
+
+/* Subrayado animado en escritorio */
+.enlace-menu::after {
+    content: "";
+    position: absolute;
+    left: var(--espaciado-2);
+    right: var(--espaciado-2);
+    bottom: 4px;
+    height: 2px;
+    background: var(--color-marca-principal);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s ease;
+}
+
+.enlace-menu:hover::after,
+.enlace-menu.activo::after {
+    transform: scaleX(1);
+}
+
+.enlace-menu:hover,
+.enlace-menu.activo {
+    color: var(--color-texto-principal);
+    background-color: transparent;
+}
+
+/* Badge contador del carrito */
+.contador-carrito {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    margin-left: 6px;
+    padding: 0 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #ffffff;
+    background: var(--color-borde);
+    border-radius: var(--radio-borde-circulo);
+    transition: var(--transicion-rapida);
+}
+
+.contador-carrito.con-items {
+    background: var(--color-marca-principal);
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+    animation: pulso-badge 1.6s ease-in-out infinite;
+}
+
+@keyframes pulso-badge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+}
+
+/* Círculo suave detrás del icono del logo */
+.icono-logo-animado {
+    padding: 7px;
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    border-radius: 12px;
+}
+
+.icono-logo-animado + .texto-logo {
+    letter-spacing: -0.5px;
+}
+
+.boton-menu-hamburguesa {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding: var(--espaciado-1);
+    z-index: 1002;
+}
+
+.barra-hamburguesa {
+    width: 24px;
+    height: 2px;
+    background-color: var(--color-texto-principal);
+    transition: var(--transicion-suave);
+}
+
+/* ==========================================================================
+   Responsive: Menú hamburguesa en móvil
+   ========================================================================== */
+@media (max-width: 768px) {
+    .boton-menu-hamburguesa {
+        display: flex;
+    }
+
+    .menu-navegacion {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        width: 280px;
+        background-color: var(--color-fondo-oscuro);
+        border-left: 1px solid var(--color-borde);
+        transform: translateX(100%);
+        transition: var(--transicion-lenta);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: var(--espaciado-5) var(--espaciado-4);
+        gap: 0;
+    }
+
+    .menu-navegacion.abierto {
+        transform: translateX(0);
+        box-shadow: -30px 0 60px rgba(0, 0, 0, 0.5);
+    }
+
+    /* En el cajón móvil: sin subrayado, con fondo pill */
+    .lista-menu {
+        flex-direction: column;
+        gap: var(--espaciado-2);
+        width: 100%;
+    }
+
+    .enlace-menu {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: var(--espaciado-2);
+        min-height: var(--touch-minimo);
+        width: 100%;
+        border-radius: var(--radio-borde-medio);
+        text-align: left;
+    }
+
+    .enlace-menu::after {
+        display: none;
+    }
+
+    .enlace-menu:hover,
+    .enlace-menu.activo {
+        background-color: var(--color-fondo-claro);
+    }
+
+    .barra-hamburguesa.activa:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    .barra-hamburguesa.activa:nth-child(2) {
+        opacity: 0;
+    }
+    .barra-hamburguesa.activa:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
+    }
+}
+
+/* ==========================================================================
+   Extras v2.3: logo sin estilos inline, anclas bajo el header flotante
+   y header-burbuja en móvil
+   ========================================================================== */
+svg.icono-logo-animado {
+    width: 40px;
+    height: 40px;
+}
+
+/* El contenido con anclas queda visible bajo el header fijo/burbuja */
+section[id] {
+    scroll-margin-top: 96px;
+}
+
+@media (max-width: 768px) {
+    .header-principal.contraido {
+        top: 10px;
+        width: calc(100% - 24px);
+        border-radius: 18px;
+    }
+
+    .header-principal.contraido .contenedor-header {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+}

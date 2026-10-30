@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión — Antares Store JM</title>
+    <meta name="description" content="Accede a tu cuenta de Antares Store JM.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="../css/tokens/variables.css">
+    <link rel="stylesheet" href="../css/componentes/botones.css">
+    <link rel="stylesheet" href="../css/paginas/autenticacion.css">
+    <link rel="stylesheet" href="../css/paginas/stitch.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23ef4444' stroke-width='3'/%3E%3Ctext x='50' y='55' font-family='Arial' font-weight='bold' font-size='14' text-anchor='middle' fill='%23ef4444'%3EA%3C/text%3E%3C/svg%3E">
+</head>
+<body class="cuerpo-autenticacion">
+
+    <!-- Fondo decorativo con orbes de luz -->
+    <div class="fondo-decorativo" aria-hidden="true">
+        <div class="orbe orbe-rojo"></div>
+        <div class="orbe orbe-indigo"></div>
+        <div class="orbe orbe-ambar"></div>
+    </div>
+
+    <main class="pantalla-autenticacion">
+        <div class="tarjeta-autenticacion">
+
+            <!-- Panel visual (marca) -->
+            <aside class="panel-visual" aria-hidden="true">
+                <div class="logo-panel-visual">
+                    <i data-lucide="footprints"></i>
+                    <span>Store JM</span>
+                </div>
+                <div class="modelo-flotante">
+                    <img src="../assets/imagenes/adidas/adidas-3.jpeg" alt="Modelo destacado Antares">
+                </div>
+                <div class="contenido-visual">
+                    <h1>Exclusividad<br>en cada paso</h1>
+                    <ul class="lista-beneficios">
+                        <li><i data-lucide="check-circle"></i> Acceso anticipado a nuevos modelos</li>
+                        <li><i data-lucide="check-circle"></i> Descuentos exclusivos para miembros</li>
+                        <li><i data-lucide="check-circle"></i> Compra directa por WhatsApp</li>
+                    </ul>
+                </div>
+            </aside>
+
+            <!-- Panel del formulario -->
+            <section class="panel-formulario">
+                <div class="barra-superior-formulario">
+                    <a href="index.html" class="logo-mini" aria-label="Volver a la tienda">
+                        <i data-lucide="footprints"></i>
+                        Antares
+                    </a>
+                    <a href="index.html" class="enlace-atras">
+                        <i data-lucide="arrow-left"></i>
+                        Tienda
+                    </a>
+                </div>
+
+                <div class="esta-seccion-titulo">
+                    <h2>Bienvenido <span>de nuevo</span></h2>
+                    <p>Ingresa tus datos para volver a comprar tus modelos favoritos.</p>
+                </div>
+                <p class="aviso-demo-auth">Acceso de demostración: tu cuenta se guarda solo en este navegador.</p>
+
+                <form id="formulario-login" class="formulario-autenticacion" novalidate>
+                    <div class="campo-formulario">
+                        <label for="correo-login">Correo electrónico</label>
+                        <div class="campo-entradas">
+                            <i data-lucide="mail"></i>
+                            <input type="email" id="correo-login" name="correo" placeholder="tu@correo.com" autocomplete="email" required>
+                        </div>
+                    </div>
+
+                    <div class="campo-formulario">
+                        <label for="contrasena-login">Contraseña</label>
+                        <div class="campo-entradas">
+                            <i data-lucide="lock"></i>
+                            <input type="password" id="contrasena-login" name="contrasena" placeholder="Tu contraseña" autocomplete="current-password" required>
+                            <button type="button" class="boton-mostrar-contrasena" id="boton-mostrar-contrasena" aria-label="Mostrar u ocultar contraseña">
+                                <i data-lucide="eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="opciones-formulario">
+                        <label class="casilla-recordar">
+                            <input type="checkbox" id="recordar-login" checked>
+                            Recordarme
+                        </label>
+                        <a href="#" class="enlace-ayuda" id="enlace-olvide-contrasena">¿Olvidaste tu contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="boton-primario grande ancho-completo">
+                        <i data-lucide="log-in" style="width: 20px; height: 20px;"></i>
+                        Iniciar sesión
+                    </button>
+                </form>
+
+                <p class="pie-formulario">
+                    ¿Necesitas una cuenta? Solicítala al administrador de Antares Store JM.
+                </p>
+
+                <!-- Acceso Admin -->
+                <div style="margin-top:16px; padding:12px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.2); border-radius:10px; text-align:center;">
+                    <p style="margin:0 0 8px; font-size:11px; color:var(--color-texto-secundario,#94a3b8);">Acceso administrativo</p>
+                    <a href="admin.html" style="color:#ef4444; font-size:12px; font-weight:600; text-decoration:none;">
+                        Panel de Inventario (Admin)
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script src="../js/utilidades/mensajes.js"></script>
+    <script src="../js/servicios/autenticacion-local.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Iconos Lucide de la página
+            if (window.lucide && typeof window.lucide.createIcons === "function") {
+                lucide.createIcons();
+            }
+
+            // Mostrar / ocultar contraseña
+            const botonMostrar = document.getElementById("boton-mostrar-contrasena");
+            const campoContrasena = document.getElementById("contrasena-login");
+
+            if (botonMostrar && campoContrasena) {
+                botonMostrar.addEventListener("click", () => {
+                    const oculta = campoContrasena.type === "password";
+                    campoContrasena.type = oculta ? "text" : "password";
+                    const icono = botonMostrar.querySelector('[data-lucide]');
+                    if (icono) {
+                        icono.setAttribute("data-lucide", oculta ? "eye-off" : "eye");
+                        if (window.lucide) lucide.createIcons();
+                    }
+                });
+            }
+
+            // Enlace demostración: recuperar contraseña (pendiente de backend)
+            const enlaceOlvide = document.getElementById("enlace-olvide-contrasena");
+            if (enlaceOlvide) {
+                enlaceOlvide.addEventListener("click", (evento) => {
+                    evento.preventDefault();
+                    mostrarInfo(
+                        "Modo demostración",
+                        "La recuperación de contraseña estará disponible cuando conectemos el backend real.",
+                        4000
+                    );
+                });
+            }
+
+            document.getElementById("formulario-login").addEventListener("submit", async function(evento) {
+                evento.preventDefault();
+
+                const correo = document.getElementById("correo-login").value.trim();
+                const contrasena = document.getElementById("contrasena-login").value;
+                const correoValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo);
+
+                if (!correo || !contrasena) {
+                    mostrarError("Campos incompletos", "Por favor completa el correo y la contraseña.");
+                    return;
+                }
+
+                if (!correoValido) {
+                    mostrarError("Correo no válido", "Revisa el formato de tu correo electrónico.");
+                    return;
+                }
+
+                try {
+                    const cuenta = await AutenticacionLocal.autenticar(correo, contrasena);
+                    if (!cuenta) {
+                        mostrarError("Credenciales incorrectas", "Verifica tu correo y contraseña. Si aún no tienes cuenta, regístrate primero.");
+                        return;
+                    }
+
+                    AutenticacionLocal.guardarSesion(cuenta, document.getElementById("recordar-login").checked);
+                    mostrarExito("Inicio de sesión", `Bienvenido de nuevo, ${cuenta.nombre}.`, 1800);
+                    setTimeout(() => {
+                        window.location.href = "index.html";
+                    }, 1600);
+                } catch (error) {
+                    mostrarError("No se pudo iniciar sesión", error.message);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

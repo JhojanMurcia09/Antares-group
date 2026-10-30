@@ -1,0 +1,23 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Dependencias
+node_modules/
+
+# Build
+dist/
+build/
+
+# Logs
+*.log
+
+# Base de datos local (si se usa archivo .db)
+*.db
+*.sqlite
+
+# Variables de entorno
+.env
+.env.local
+config.local.php
+src/assets/uploads/

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito — Antares Store JM</title>
+
+    <!-- Tipografía -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Iconos Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="../css/tokens/variables.css">
+    <link rel="stylesheet" href="../css/diseno/layout.css">
+    <link rel="stylesheet" href="../css/componentes/botones.css">
+    <link rel="stylesheet" href="../css/componentes/header.css">
+    <link rel="stylesheet" href="../css/componentes/paginas.css">
+    <link rel="stylesheet" href="../css/paginas/stitch.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23ef4444' stroke-width='3'/%3E%3Ctext x='50' y='55' font-family='Arial' font-weight='bold' font-size='14' text-anchor='middle' fill='%23ef4444'%3EA%3C/text%3E%3C/svg%3E">
+</head>
+<body class="pagina-carrito">
+    <header class="header-principal">
+        <div class="contenedor-header">
+            <div class="logo-marca">
+                <i data-lucide="footprints" class="icono-logo-animado" style="width: 34px; height: 34px; color: #ef4444;"></i>
+                <span class="texto-logo">Antares</span>
+            </div>
+            <nav class="menu-navegacion">
+                <ul class="lista-menu">
+                    <li><a href="../html/index.html" class="enlace-menu">Volver a la tienda</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="contenedor-carrito">
+        <h2 class="titulo-seccion">Tu carrito</h2>
+
+        <div id="items-carrito" class="items-carrito">
+            <!-- Items insertados por JavaScript -->
+        </div>
+
+        <div class="resumen-carrito">
+            <p class="etiqueta-resumen">Resumen de tu compra</p>
+            <p class="total-carrito">Total: <span id="valor-total">$0</span></p>
+            <button class="boton-primario ancho-completo" onclick="Carrito.vaciarCarrito()">
+                <i data-lucide="trash-2" style="width: 20px; height: 20px;"></i>
+                Vaciar carrito
+            </button>
+            <button class="boton-whatsapp grande ancho-completo" style="margin-top: var(--espaciado-2);" onclick="enviarPorWhatsappCarrito()">
+                <i data-lucide="send" style="width: 20px; height: 20px;"></i>
+                Finalizar compra por WhatsApp
+            </button>
+            <a href="../html/index.html" class="boton-secundario ancho-completo" style="margin-top: var(--espaciado-2);">
+                <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+                Seguir comprando
+            </a>
+        </div>
+    </main>
+
+    <footer class="pie-pagina">
+        <div class="contenido-pie">
+            <span class="texto-logo">Antares</span>
+            <p class="derechos-reservados-texto">&copy; 2026 Antares Store JM. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="../js/utilidades/formato.js"></script>
+    <script src="../js/utilidades/mensajes.js"></script>
+    <script src="../js/servicios/whatsapp.js"></script>
+    <script src="../js/componentes/carrito.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            Carrito.renderizarCarrito();
+            // Iconos Lucide del resumen
+            if (window.lucide && typeof window.lucide.createIcons === "function") {
+                lucide.createIcons();
+            }
+        });
+
+        /**
+         * Arma el mensaje completo del carrito y abre WhatsApp.
+         * En modo demostración (número sin configurar) muestra SweetAlert.
+         */
+        function enviarPorWhatsappCarrito() {
+            const carrito = Carrito.obtenerCarrito();
+            if (carrito.length === 0) {
+                mostrarAdvertencia("Carrito vacío", "Agrega productos antes de finalizar la compra.");
+                return;
+            }
+
+            let mensaje = "Hola, quiero finalizar mi compra en Antares Store JM:\n\n";
+            carrito.forEach((item, i) => {
+                mensaje += `${i + 1}. ${item.nombre}\n   Ref: ${item.referencia} | Talla: ${item.talla} | Cantidad: ${item.cantidad} | Precio: ${formatearPrecio(item.precio)}\n\n`;
+            });
+            const total = Carrito.calcularTotal();
+            mensaje += `Total: ${formatearPrecio(total)}`;
+
+            if (!numeroWhatsAppValido()) {
+                mostrarAdvertencia(
+                    "Modo demostración",
+                    "El número de WhatsApp de la tienda aún no está configurado. Muy pronto podrás comprar directamente por WhatsApp."
+                );
+                return;
+            }
+
+            const url = `https://wa.me/${NUMERO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+            mostrarCarga("Abriendo WhatsApp...");
+            setTimeout(() => {
+                cerrarMensajes();
+                window.open(url, "_blank");
+            }, 800);
+        }
+    </script>
+</body>
+</html>

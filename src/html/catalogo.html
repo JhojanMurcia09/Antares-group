@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo — Antares Store JM</title>
+    <meta name="description" content="Catálogo completo de calzado: 28 modelos de Adidas, New Balance, Nike SB, On Running, Wider, Armani Exchange y Urban/Paris.">
+    
+    <!-- Google Fonts - Tipografía gratuita -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Iconos Lucide - Iconografía gratuita -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- SweetAlert2 CDN para todos los mensajes del sistema -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Motion One CDN - Animaciones UI/UX Pro Max (gratis) - Build UMD que expone window.Motion -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@10.16.2/dist/motion.min.js"></script>
+    
+    <!-- Hojas de estilo -->
+    <link rel="stylesheet" href="../css/tokens/variables.css">
+    <link rel="stylesheet" href="../css/diseno/layout.css">
+    <link rel="stylesheet" href="../css/animaciones/transiciones.css">
+    <link rel="stylesheet" href="../css/animaciones/motion.css">
+    <link rel="stylesheet" href="../css/componentes/botones.css">
+    <link rel="stylesheet" href="../css/componentes/tarjetas.css">
+    <link rel="stylesheet" href="../css/componentes/header.css">
+    <link rel="stylesheet" href="../css/componentes/modal.css">
+    <link rel="stylesheet" href="../css/paginas/index.css">
+    <link rel="stylesheet" href="../css/componentes/paginas.css">
+    <link rel="stylesheet" href="../css/paginas/catalogo.css">
+    <link rel="stylesheet" href="../css/componentes/flotantes.css">
+    <link rel="stylesheet" href="../css/paginas/stitch.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='none' stroke='%23ef4444' stroke-width='3'/%3E%3Ctext x='50' y='55' font-family='Arial' font-weight='bold' font-size='14' text-anchor='middle' fill='%23ef4444'>A%3C/text%3E%3C/svg%3E">
+</head>
+<body class="pagina-catalogo">
+
+    <!-- Header: sigue la pantalla y al bajar se convierte en burbuja flotante -->
+    <header class="header-principal" id="header-principal">
+        <div class="contenedor-header">
+            <div class="logo-marca">
+                <i data-lucide="footprints" class="icono-logo-animado" style="color: #ef4444;"></i>
+                <span class="texto-logo">Antares</span>
+            </div>
+
+            <nav class="menu-navegacion" id="menu-navegacion">
+                <ul class="lista-menu">
+                    <li><a href="index.html" class="enlace-menu menu-item-motion">Inicio</a></li>
+                    <li><a href="catalogo.html" class="enlace-menu menu-item-motion activo">Catálogo</a></li>
+                    <li><a href="index.html#marcas" class="enlace-menu menu-item-motion">Marcas</a></li>
+                    <li><a href="index.html#contacto" class="enlace-menu menu-item-motion">Contacto</a></li>
+                    <li><a href="login.html" class="enlace-menu menu-item-motion">Iniciar sesión</a></li>
+                    <li><a href="carrito.html" class="enlace-menu menu-item-motion">Carrito <span class="contador-carrito" id="contador-carrito">0</span></a></li>
+                </ul>
+            </nav>
+
+            <button class="boton-menu-hamburguesa" id="boton-menu-hamburguesa" aria-label="Abrir menú">
+                <i data-lucide="menu" style="width: 24px; height: 24px;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Cabecera de la página del catálogo -->
+    <section class="cabecera-pagina reveal-scroll">
+        <h1 class="titulo-pagina">Catálogo oficial <span class="texto-gradiente">Drop 2026</span></h1>
+        <p class="subtitulo-pagina">Encuentra el modelo ideal, comprueba sus tallas y arma tu pedido para entrega en Colombia.</p>
+    </section>
+
+    <section class="barra-busqueda-catalogo" aria-label="Buscar y ordenar productos">
+        <input id="busqueda-catalogo" type="search" placeholder="Buscar por modelo, marca o referencia..." aria-label="Buscar productos">
+        <select id="ordenar-productos" aria-label="Ordenar productos">
+            <option value="destacados">Más populares</option>
+            <option value="precio-asc">Precio: menor a mayor</option>
+            <option value="precio-desc">Precio: mayor a menor</option>
+            <option value="nombre">Nombre: A a Z</option>
+        </select>
+    </section>
+
+    <!-- Filtros por marca (pegajosos: siguen la pantalla) -->
+    <section id="filtros-marca" class="seccion-filtros sticky-filtros reveal-scroll">
+        <div class="contenedor-filtros">
+            <button class="boton-filtro filtro-motion activo" data-marca="todos">Todas</button>
+            <button class="boton-filtro filtro-motion" data-marca="adidas">Adidas</button>
+            <button class="boton-filtro filtro-motion" data-marca="new-balance">New Balance</button>
+            <button class="boton-filtro filtro-motion" data-marca="nike-sb">Nike SB</button>
+            <button class="boton-filtro filtro-motion" data-marca="on-running">On Running</button>
+            <button class="boton-filtro filtro-motion" data-marca="wider">Wider</button>
+            <button class="boton-filtro filtro-motion" data-marca="armani-exchange">Armani Exchange</button>
+            <button class="boton-filtro filtro-motion" data-marca="urban-paris">Urban / Paris</button>
+        </div>
+    </section>
+
+    <!-- Catálogo -->
+    <section id="catalogo" class="seccion-catalogo reveal-scroll">
+        <div class="bento-grid" id="bento-grid-productos">
+            <!-- Las tarjetas se insertan aquí por JavaScript -->
+        </div>
+
+        <!-- Estado vacío (cuando no hay resultados) -->
+        <div class="estado-vacio" id="estado-vacio" style="display: none;">
+            <i data-lucide="search-x" class="icono-vacio" style="width: 64px; height: 64px;"></i>
+            <p>No se encontraron productos con ese filtro.</p>
+        </div>
+    </section>
+
+    <!-- Modal Quick View -->
+    <div class="modal-vista-rapida" id="modal-vista-rapida" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="contenido-modal">
+            <button class="boton-cerrar-modal" id="boton-cerrar-modal" aria-label="Cerrar vista rápida">
+                <i data-lucide="x" style="width: 24px; height: 24px;"></i>
+            </button>
+
+            <div class="galeria-modal">
+                <img src="" alt="" id="imagen-principal-modal" class="imagen-principal-modal">
+                <div class="miniaturas-modal" id="miniaturas-modal">
+                    <!-- Miniaturas insertadas por JS -->
+                </div>
+            </div>
+
+            <div class="informacion-producto-modal">
+                <h2 id="nombre-producto-modal" class="nombre-producto-modal">Nombre del modelo</h2>
+                <p id="marca-producto-modal" class="marca-producto-modal">Marca</p>
+                <p id="referencia-producto-modal" class="referencia-producto-modal">Referencia: ---</p>
+                <p id="precio-producto-modal" class="precio-producto-modal">$0.000</p>
+
+                <div class="seleccion-talla-modal" id="seleccion-talla-modal">
+                    <p class="etiqueta-tallas">Talla disponible</p>
+                    <div class="contenedor-pildoras-talla" id="pildoras-talla-modal">
+                        <!-- Píldoras insertadas por JS -->
+                    </div>
+                </div>
+
+                <div class="descripcion-modal" id="descripcion-modal">
+                    <!-- Descripción insertada por JS -->
+                </div>
+
+                <div class="acciones-modal">
+                    <button class="boton-whatsapp ancho-completo boton-motion" id="boton-whatsapp-modal">
+                        <i data-lucide="message-circle" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                        Comprar por WhatsApp
+                    </button>
+                    <button class="boton-secundario ancho-completo boton-motion" id="boton-agregar-carrito-modal">
+                        <i data-lucide="shopping-cart" style="width: 20px; height: 20px; margin-right: 8px;"></i>
+                        Agregar al carrito
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overlay del modal -->
+    <div class="overlay-modal" id="overlay-modal" aria-hidden="true"></div>
+
+    <footer class="pie-pagina">
+        <div class="contenido-pie">
+            <div class="informacion-empresa">
+                <i data-lucide="footprints" style="width: 32px; height: 32px; color: #ef4444; margin-bottom: 8px;"></i>
+                <span class="texto-logo">Antares</span>
+                <p>Calzado premium streetwear e importado.</p>
+            </div>
+            <div class="enlaces-pie">
+                <a href="index.html">Volver al inicio</a>
+                <a href="carrito.html">Mi carrito</a>
+                <a href="#">Términos y condiciones</a>
+            </div>
+            <div class="derechos-reservados">
+                <p>&copy; 2026 Antares Store JM. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Burbuja flotante de WhatsApp: sigue la pantalla en la parte inferior -->
+    <button class="burbuja-whatsapp" id="burbuja-whatsapp" aria-label="Chatea por WhatsApp">
+        <span class="anillo-whatsapp" aria-hidden="true"></span>
+        <i data-lucide="message-circle" style="width: 28px; height: 28px;"></i>
+        <span class="tooltip-whatsapp">Comprar por WhatsApp</span>
+    </button>
+
+    <!-- Scripts -->
+    <script src="../js/utilidades/formato.js"></script>
+    <script src="../js/utilidades/mensajes.js"></script>
+    <script src="../js/servicios/whatsapp.js"></script>
+    <script src="../js/servicios/productos-api.js"></script>
+    <script src="../js/componentes/motion-animations.js"></script>
+    <script src="../js/componentes/rotacion360.js"></script>
+    <script src="../js/componentes/catalogo.js"></script>
+    <script src="../js/componentes/carrito.js"></script>
+    <script src="../js/core/app.js"></script>
+    
+    <!-- Inicializar iconos Lucide (con guarda en caso de fallo del CDN) -->
+    <script>
+        if (window.lucide && typeof window.lucide.createIcons === "function") {
+            lucide.createIcons();
+        }
+    </script>
+</body>
+</html>
